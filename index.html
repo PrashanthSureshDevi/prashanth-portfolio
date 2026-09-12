@@ -13,6 +13,170 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+
+<style>
+  #hero{
+    --hero-accent: #22d3ee;
+    --hero-accent-2: #8b5cf6;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* neural-network particle canvas, scoped to the hero only */
+  .hero-canvas{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: .55;
+    pointer-events: none;
+  }
+
+  #hero .hero-grid{ position: relative; z-index: 1; }
+
+  /* status pill */
+  #hero .hero-status{
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    padding: .4rem .9rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .04em;
+    color: rgba(255,255,255,.75);
+    margin-bottom: 1.25rem;
+  }
+  #hero .status-dot{
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--hero-accent);
+    box-shadow: 0 0 8px var(--hero-accent);
+    animation: heroPulse 2.2s ease-in-out infinite;
+  }
+
+  /* headline accent */
+  #hero .hero-headline .accent-line{
+    background: linear-gradient(90deg, var(--hero-accent), var(--hero-accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* buttons */
+  #hero .hero-actions{ display: flex; flex-wrap: wrap; gap: .85rem; }
+  #hero .hero-actions .btn{ display: inline-flex; align-items: center; gap: .55rem; }
+  #hero .hero-actions .btn-icon{ width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* portrait card upgrades */
+  #hero .portrait-stage{ perspective: 1200px; }
+  #hero .portrait-card{
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s ease;
+    box-shadow: 0 30px 80px -30px rgba(34,211,238,.35), 0 10px 30px -14px rgba(139,92,246,.28);
+    will-change: transform;
+  }
+  #hero .portrait-card:hover{
+    box-shadow: 0 40px 100px -30px rgba(34,211,238,.5), 0 14px 40px -14px rgba(139,92,246,.4);
+  }
+  #hero .portrait-img-wrap{
+    border-radius: 26px;
+    overflow: hidden;
+  }
+  #hero .portrait-img-wrap img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  /* rotating conic-gradient ring — the "AI frame" */
+  #hero .portrait-ring{
+    position: absolute;
+    inset: -14px;
+    border-radius: 30px;
+    padding: 1px;
+    background: conic-gradient(from 0deg, var(--hero-accent), var(--hero-accent-2), var(--hero-accent));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: .55;
+    pointer-events: none;
+    animation: heroSpin 10s linear infinite;
+  }
+
+  /* entrance sequence — one orchestrated load moment */
+  #hero .hero-copy > *{
+    animation: heroFadeUp .8s cubic-bezier(.16,1,.3,1) both;
+  }
+  #hero .hero-copy > *:nth-child(1){ animation-delay: .05s; }
+  #hero .hero-copy > *:nth-child(2){ animation-delay: .12s; }
+  #hero .hero-copy > *:nth-child(3){ animation-delay: .19s; }
+  #hero .hero-copy > *:nth-child(4){ animation-delay: .26s; }
+  #hero .hero-copy > *:nth-child(5){ animation-delay: .33s; }
+  #hero .hero-copy > *:nth-child(6){ animation-delay: .40s; }
+  #hero .hero-copy > *:nth-child(7){ animation-delay: .47s; }
+  #hero .portrait-stage{
+    animation: heroFadeScale .9s cubic-bezier(.16,1,.3,1) .3s both;
+  }
+
+  @keyframes heroPulse{
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .35; transform: scale(.7); }
+  }
+  @keyframes heroSpin{ to { transform: rotate(360deg); } }
+  @keyframes heroFadeUp{
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes heroFadeScale{
+    from { opacity: 0; transform: scale(.92) translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* accessibility: visible focus states on the new interactive bits */
+  #hero a:focus-visible,
+  #hero .hero-status:focus-visible{
+    outline: 2px solid var(--hero-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    #hero .hero-copy > *,
+    #hero .portrait-stage,
+    #hero .portrait-ring,
+    #hero .status-dot{
+      animation: none !important;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* responsive */
+  @media (max-width: 900px){
+    #hero .hero-grid{ grid-template-columns: 1fr; }
+    #hero .portrait-stage{ order: -1; margin: 0 auto 2.25rem; }
+    #hero .hero-copy{ text-align: center; }
+    #hero .hero-status{ margin-left: auto; margin-right: auto; }
+    #hero .hero-actions{ justify-content: center; }
+    #hero .hero-meta{ justify-content: center; }
+  }
+  @media (max-width: 560px){
+    #hero .hero-headline{ font-size: clamp(2.1rem, 10vw, 3rem); line-height: 1.05; }
+    #hero .hero-status{ font-size: .68rem; }
+    #hero .hero-actions{ flex-direction: column; align-items: stretch; }
+    #hero .hero-actions .btn{ justify-content: center; width: 100%; }
+    #hero .portrait-card{ max-width: 280px; margin: 0 auto; }
+  }
+</style>
 </head>
 <body>
 
@@ -35,18 +199,46 @@
   <a href="#contact" class="nav-cta" data-magnetic>Let's connect</a>
 </nav>
 
-<!-- HERO -->
-<header class="hero wrap">
+<!-- HERO (upgraded) -->
+<header class="hero wrap" id="hero">
+  <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+
   <div class="hero-grid">
     <div class="hero-copy reveal is-visible">
-      <span class="eyebrow">AI / ML Engineer</span>
-      <h1 class="hero-headline">ENGINEERING<br>THE FUTURE<br><span class="accent-line">WITH AI.</span></h1>
-      <p class="hero-sub">Engineering the future with Machine Learning, LLMs, NLP, RAG &amp; Generative AI.</p>
-      <p class="hero-intro">Hi, I'm Prashanth S — an aspiring AI/ML Engineer passionate about building intelligent systems and exploring how Machine Learning, LLMs, NLP, RAG and Generative AI can solve real-world problems.</p>
-      <div class="hero-actions">
-        <a href="#projects" class="btn btn-primary" data-magnetic>Explore my work <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></a>
-        <a href="#contact" class="btn btn-outline" data-magnetic>Let's connect <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></a>
+
+      <div class="hero-status" data-magnetic>
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>Currently learning AI &amp; ML</span>
       </div>
+
+      <span class="eyebrow">ASPIRING AI/ML ENGINEER</span>
+
+      <h1 class="hero-headline">PRASHANTH <span class="accent-line">S</span></h1>
+
+      <p class="hero-sub">Engineering the future with Machine Learning, LLMs, NLP, RAG &amp; Generative AI.</p>
+
+      <p class="hero-intro">Building intelligent systems and exploring Machine Learning, LLMs, NLP, RAG &amp; Generative AI.</p>
+
+      <!-- TODO: replace href="#" below with your real GitHub / LinkedIn / LeetCode URLs -->
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary" data-magnetic>
+          Explore My Work
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+        </a>
+        <a href="https://github.com/PrashanthSureshDevi" class="btn btn-outline" data-magnetic aria-label="GitHub profile ">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.75 5.48.75 11.75c0 4.99 3.24 9.22 7.73 10.72.56.1.77-.24.77-.54 0-.27-.01-1.15-.02-2.09-3.15.68-3.81-1.34-3.81-1.34-.52-1.31-1.26-1.66-1.26-1.66-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.51-.29-5.15-1.26-5.15-5.6 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.16a10.9 10.9 0 0 1 5.72 0c2.18-1.47 3.14-1.16 3.14-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.8 1.17 3.04 0 4.35-2.64 5.31-5.16 5.59.41.35.77 1.04.77 2.11 0 1.52-.01 2.75-.01 3.12 0 .3.2.65.78.54A11.26 11.26 0 0 0 23.25 11.75C23.25 5.48 18.27.5 12 .5z"/></svg>
+          GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/prashanth-s-665268422" class="btn btn-outline" data-magnetic aria-label="LinkedIn profile">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.27 2.38 4.27 5.47v6.27zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://leetcode.com/u/prashanthaiml/" class="btn btn-outline" data-magnetic aria-label="LeetCode profile ">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 4L4 12l4 8M16 4l4 8-4 8"/></svg>
+          LeetCode
+        </a>
+      </div>
+
       <div class="hero-meta">
         <div><strong>ML / DL</strong>Model building</div>
         <div><strong>LLM / RAG</strong>Applied systems</div>
@@ -56,6 +248,7 @@
 
     <div class="portrait-stage">
       <div class="portrait-card" id="portraitCard">
+        <div class="portrait-ring" aria-hidden="true"></div>
         <div class="portrait-glow"></div>
         <div class="portrait-img-wrap">
           <img src="profile.jpeg" alt="Portrait of Prashanth S, AI/ML Engineer" width="533" height="1600">
@@ -197,5 +390,143 @@
 </footer>
 
 <script src="script.js"></script>
+<script>
+(function(){
+  var heroEl = document.getElementById('hero');
+  var canvas = document.getElementById('heroCanvas');
+  if(!heroEl || !canvas) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ctx = canvas.getContext('2d');
+  var w, h, dpr;
+  var nodes = [];
+  var mouse = { x: null, y: null };
+  var NODE_COUNT = 46;
+  var LINK_DIST = 130;
+  var rafId = null;
+
+  function resize(){
+    dpr = window.devicePixelRatio || 1;
+    w = heroEl.clientWidth;
+    h = heroEl.clientHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function makeNodes(){
+    nodes = [];
+    for(var i = 0; i < NODE_COUNT; i++){
+      nodes.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        r: Math.random() * 1.5 + 0.6
+      });
+    }
+  }
+
+  function drawFrame(){
+    ctx.clearRect(0, 0, w, h);
+
+    for(var i = 0; i < nodes.length; i++){
+      var n = nodes[i];
+      n.x += n.vx;
+      n.y += n.vy;
+      if(n.x < 0 || n.x > w) n.vx *= -1;
+      if(n.y < 0 || n.y > h) n.vy *= -1;
+    }
+
+    for(var a = 0; a < nodes.length; a++){
+      for(var b = a + 1; b < nodes.length; b++){
+        var dx = nodes[a].x - nodes[b].x;
+        var dy = nodes[a].y - nodes[b].y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if(dist < LINK_DIST){
+          var o = (1 - dist / LINK_DIST) * 0.35;
+          ctx.strokeStyle = 'rgba(110,231,255,' + o + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(nodes[a].x, nodes[a].y);
+          ctx.lineTo(nodes[b].x, nodes[b].y);
+          ctx.stroke();
+        }
+      }
+      if(mouse.x !== null){
+        var mdx = nodes[a].x - mouse.x;
+        var mdy = nodes[a].y - mouse.y;
+        var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+        if(mdist < 160){
+          var mo = (1 - mdist / 160) * 0.5;
+          ctx.strokeStyle = 'rgba(139,92,246,' + mo + ')';
+          ctx.beginPath();
+          ctx.moveTo(nodes[a].x, nodes[a].y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    for(var k = 0; k < nodes.length; k++){
+      ctx.beginPath();
+      ctx.arc(nodes[k].x, nodes[k].y, nodes[k].r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(180,240,255,0.8)';
+      ctx.fill();
+    }
+  }
+
+  function loop(){
+    drawFrame();
+    rafId = requestAnimationFrame(loop);
+  }
+
+  resize();
+  makeNodes();
+  if(reduceMotion){
+    drawFrame();
+  } else {
+    loop();
+  }
+
+  var resizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function(){
+      resize();
+      makeNodes();
+    }, 150);
+  }, { passive: true });
+
+  heroEl.addEventListener('mousemove', function(e){
+    var rect = heroEl.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  }, { passive: true });
+
+  heroEl.addEventListener('mouseleave', function(){
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  // subtle portrait tilt on hover (desktop only, skipped for reduced motion)
+  var stage = heroEl.querySelector('.portrait-stage');
+  var card = document.getElementById('portraitCard');
+  if(stage && card && !reduceMotion){
+    stage.addEventListener('mousemove', function(e){
+      var r = card.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - 0.5;
+      var py = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = 'rotateY(' + (px * 6) + 'deg) rotateX(' + (py * -6) + 'deg) translateY(-4px)';
+    });
+    stage.addEventListener('mouseleave', function(){
+      card.style.transform = '';
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
