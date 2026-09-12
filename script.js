@@ -14,7 +14,6 @@ const CONFIG = {
       { name: "C" }, { name: "Python" }, { name: "SQL" }
     ]},
     { name: "AI / ML", skills: [
-      { name: "AI" },
       { name: "Machine Learning", level: "Basic" },
       { name: "NLP", level: "Basic" },
       { name: "Generative AI" },
@@ -59,6 +58,66 @@ const ICONS = {
   arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>'
 };
 
+/* ---------- PAGE-LOAD SWIPE INTRO: remove once everything has loaded ---------- */
+window.addEventListener('load', () => {
+  document.body.classList.remove('intro-lock');
+  const intro = document.getElementById('pageIntro');
+  if (intro) setTimeout(() => intro.remove(), 1200);
+});
+
+/* ---------- COLORFUL TRAILING CURSOR (canvas particle trail) ---------- */
+(function colorfulCursorTrail(){
+  if (isTouch) return;
+  const canvas = document.getElementById('cursorTrail');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let dpr;
+
+  function resize(){
+    dpr = window.devicePixelRatio || 1;
+    canvas.width = innerWidth * dpr;
+    canvas.height = innerHeight * dpr;
+    canvas.style.width = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  let particles = [];
+  let hue = 190;
+  window.addEventListener('mousemove', (e) => {
+    hue = (hue + 3) % 360;
+    for (let i = 0; i < 2; i++){
+      particles.push({
+        x: e.clientX, y: e.clientY,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        life: 1, hue, r: Math.random() * 2.5 + 1.5
+      });
+    }
+    if (particles.length > 160) particles.splice(0, particles.length - 160);
+  }, { passive: true });
+
+  function loop(){
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    ctx.globalCompositeOperation = 'lighter';
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.life -= 0.02;
+      if (p.life > 0){
+        ctx.beginPath();
+        ctx.fillStyle = `hsla(${p.hue}, 90%, 65%, ${p.life * 0.55})`;
+        ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+    particles = particles.filter(p => p.life > 0);
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(loop);
+  }
+  if (!reduceMotion) loop();
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- NAV SCROLL ---------- */
@@ -66,6 +125,21 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 40);
   }, { passive: true });
+
+  /* ---------- SCROLL PROGRESS BAR ---------- */
+  (function scrollProgress(){
+    const bar = document.getElementById('scrollProgress');
+    if (!bar) return;
+    function update(){
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
 
   /* ---------- REVEAL ON SCROLL ---------- */
   const revealEls = document.querySelectorAll('.reveal');
@@ -193,9 +267,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const shell = document.getElementById('stackShell');
     if (!shell) return;
     const speeds = [34, 40, 30, 44, 26, 38, 32]; // seconds per loop, varied per row
+    const rowHues = ['#45d8f2', '#8b7cf0', '#f97fd1', '#34d399', '#fbbf24', '#f2705c', '#6fa8f2']; // per-row accent color
     CONFIG.stack.forEach((cat, i) => {
       const row = document.createElement('div');
       row.className = 'stack-row' + (i % 2 === 1 ? ' reverse' : '');
+      row.style.setProperty('--row-accent', rowHues[i % rowHues.length]);
 
       const label = document.createElement('span');
       label.className = 'stack-row-label';
@@ -209,7 +285,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // duplicate the skill list so the loop is seamless
       const chipsHTML = cat.skills.map(s => {
         const level = s.level ? `<span class="chip-level">${s.level}</span>` : '';
-        return `<span class="skill-chip"><span class="chip-dot"></span>${s.name}${level}</span>`;
+        const delay = (Math.random() * 3).toFixed(2);
+        return `<span class="skill-chip" style="animation-delay:${delay}s"><span class="chip-dot"></span>${s.name}${level}</span>`;
       }).join('');
       track.innerHTML = chipsHTML + chipsHTML;
 
@@ -401,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
-  /* ---------- CONTACT FORM: front-end validation only ---------- */
+  /* ---------- CONTACT FORM: AJAX submit (no page redirect) ---------- */
   (function contactForm(){
     const form = document.getElementById('contactForm');
     if (!form) return;
@@ -436,39 +513,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     form.addEventListener('submit', (e) => {
-  e.preventDefault();
+      e.preventDefault();
 
-  if (!validate()){
-    status.textContent = 'Please fix the highlighted fields.';
-    status.classList.remove('is-success');
-    status.classList.add('is-error');
-    return;
-  }
+      if (!validate()){
+        status.textContent = 'Please fix the highlighted fields.';
+        status.classList.remove('is-success');
+        status.classList.add('is-error');
+        return;
+      }
 
-  status.textContent = 'Sending...';
-  status.classList.remove('is-error', 'is-success');
+      status.textContent = 'Sending...';
+      status.classList.remove('is-error', 'is-success');
 
-  fetch(form.action, {
-    method: 'POST',
-    body: new FormData(form),
-    headers: { 'Accept': 'application/json' }
-  })
-  .then(response => {
-    if (response.ok) {
-      status.textContent = 'Message sent — thank you!';
-      status.classList.add('is-success');
-      form.reset();
-    } else {
-      return response.json().then(data => {
-        throw new Error(data?.errors?.map(e => e.message).join(', ') || 'Submission failed.');
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(response => {
+        if (response.ok) {
+          status.textContent = 'Message sent — thank you!';
+          status.classList.add('is-success');
+          form.reset();
+        } else {
+          return response.json().then(data => {
+            throw new Error(data?.errors?.map(e => e.message).join(', ') || 'Submission failed.');
+          });
+        }
+      })
+      .catch(err => {
+        status.textContent = err.message || 'Something went wrong. Please try again.';
+        status.classList.add('is-error');
       });
-    }
-  })
-  .catch(err => {
-    status.textContent = err.message || 'Something went wrong. Please try again.';
-    status.classList.add('is-error');
-  });
-});
+    });
   })();
 
   /* ---------- MOBILE NAV FALLBACK: smooth scroll already via CSS ---------- */
