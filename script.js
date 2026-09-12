@@ -5,25 +5,38 @@ const CONFIG = {
   name: "Prashanth S",
   role: "AI / ML Engineer",
   social: {
-    github: "#",     // TODO: replace with your GitHub profile URL
-    linkedin: "#",   // TODO: replace with your LinkedIn profile URL
-    leetcode: "#"    // TODO: replace with your LeetCode profile URL
+    github: "https://github.com/PrashanthSureshDevi",
+    linkedin: "https://www.linkedin.com/in/prashanth-s-665268422",
+    leetcode: "https://leetcode.com/u/prashanthaiml/"
   },
-  projects: [
-    { num: "01", title: "AI Chat Assistant", desc: "LLM-powered conversational assistant.", tech: ["Python","LLM","Prompt Engineering"] },
-    { num: "02", title: "RAG Knowledge System", desc: "Retrieval-Augmented Generation system for answering questions from custom documents.", tech: ["RAG","Embeddings","Vector DB"] },
-    { num: "03", title: "NLP Intelligence", desc: "Natural Language Processing project for analyzing and understanding text.", tech: ["NLP","Python","Text Processing"] },
-    { num: "04", title: "Machine Learning System", desc: "Machine Learning model solving a real-world prediction/classification problem.", tech: ["Machine Learning","Python","Data Science"] }
-  ],
-  learning: ["Large Language Models","Natural Language Processing","Retrieval-Augmented Generation","Generative AI","AI Agents","Machine Learning"],
   stack: [
-    { name: "Languages", skills: ["Python"] },
-    { name: "AI / ML", skills: ["Machine Learning","Deep Learning","Artificial Intelligence"] },
-    { name: "Generative AI", skills: ["LLMs","Generative AI","AI Agents"] },
-    { name: "NLP", skills: ["Natural Language Processing","Text Processing"] },
-    { name: "LLM Systems", skills: ["RAG","Embeddings","Vector Search","Prompt Engineering"] },
-    { name: "Tools", skills: ["Git","GitHub","Jupyter","VS Code"] },
-    { name: "Fundamentals", skills: ["DSA","Data Structures","Algorithms"] }
+    { name: "Programming Languages", skills: [
+      { name: "C" }, { name: "Python" }, { name: "SQL" }
+    ]},
+    { name: "AI / ML", skills: [
+      { name: "AI" },
+      { name: "Machine Learning", level: "Basic" },
+      { name: "NLP", level: "Basic" },
+      { name: "Generative AI" },
+      { name: "Deep Learning", level: "Basic" },
+      { name: "RAG", level: "Basic" },
+      { name: "LLM", level: "Basic" }
+    ]},
+    { name: "Fundamentals", skills: [
+      { name: "Data Structures & Algorithms" }, { name: "ML Fundamentals" }
+    ]},
+    { name: "Tools", skills: [
+      { name: "GitHub" }, { name: "VS Code" }, { name: "Git" }
+    ]},
+    { name: "Soft Skills", skills: [
+      { name: "Communication" }, { name: "Leadership" }, { name: "Team Collaboration" }, { name: "Problem Solving" }
+    ]},
+    { name: "Web Development", skills: [
+      { name: "HTML" }, { name: "CSS" }, { name: "JavaScript" }
+    ]},
+    { name: "Data & Visualization", skills: [
+      { name: "NumPy" }, { name: "Pandas" }, { name: "Matplotlib" }, { name: "Tkinter" }
+    ]}
   ],
   terminalLines: [
     "initializing neural systems...",
@@ -79,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       el.addEventListener('mouseenter', () => ring.classList.add('is-active'));
       el.addEventListener('mouseleave', () => ring.classList.remove('is-active'));
     });
-    document.querySelectorAll('.project-card, .portrait-card, .learn-card').forEach(el => {
+    document.querySelectorAll('.portrait-card, .about-portrait-frame, .glass-card, .timeline-card, .coming-soon').forEach(el => {
       el.addEventListener('mouseenter', () => ring.classList.add('is-card'));
       el.addEventListener('mouseleave', () => ring.classList.remove('is-card'));
     });
@@ -157,78 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
     step();
   })();
 
-  /* ---------- FEATURED PROJECT MINI VISUAL (RAG diagram) ---------- */
-  (function ragCanvas(){
-    const canvas = document.getElementById('rag-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    function resize(){
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize, { passive:true });
-    const docs = Array.from({length:5}, (_,i) => ({ x: 60, y: 60 + i*((canvas.clientHeight-120)/4) }));
-    let t = 0;
-    function draw(){
-      const w = canvas.width, h = canvas.height;
-      ctx.clearRect(0,0,w,h);
-      const hub = { x: w*0.52, y: h*0.5 };
-      const out = { x: w*0.86, y: h*0.5 };
-      docs.forEach((d,i) => {
-        ctx.strokeStyle = 'rgba(69,216,242,0.18)';
-        ctx.beginPath(); ctx.moveTo(d.x,d.y); ctx.lineTo(hub.x,hub.y); ctx.stroke();
-        ctx.fillStyle = '#10151d';
-        ctx.strokeStyle = 'rgba(255,255,255,0.16)';
-        ctx.beginPath(); ctx.roundRect ? ctx.roundRect(d.x-22,d.y-14,44,28,6) : ctx.rect(d.x-22,d.y-14,44,28);
-        ctx.fill(); ctx.stroke();
-      });
-      ctx.strokeStyle = 'rgba(69,216,242,0.3)';
-      ctx.beginPath(); ctx.moveTo(hub.x,hub.y); ctx.lineTo(out.x,out.y); ctx.stroke();
-      const pulse = 6 + Math.sin(t/28)*2;
-      ctx.fillStyle = '#45d8f2';
-      ctx.shadowColor = '#45d8f2'; ctx.shadowBlur = 16;
-      ctx.beginPath(); ctx.arc(hub.x,hub.y,pulse+8,0,Math.PI*2); ctx.fill();
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = '#0d1117'; ctx.strokeStyle = '#45d8f2'; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(out.x,out.y,16,0,Math.PI*2); ctx.fill(); ctx.stroke();
-      t++;
-      if (!reduceMotion) requestAnimationFrame(draw); else ctx.getContextAttributes && null;
-    }
-    draw();
-  })();
-
-  /* ---------- PROJECTS RENDER ---------- */
-  const grid = document.getElementById('projectGrid');
-  CONFIG.projects.forEach(p => {
-    const el = document.createElement('div');
-    el.className = 'project-card';
-    el.innerHTML = `
-      <div class="project-num">${p.num}</div>
-      <h3>${p.title}</h3>
-      <p>${p.desc}</p>
-      <div class="tech-row">${p.tech.map(t => `<span class="tech-tag">${t}</span>`).join('')}</div>
-      <div class="project-links">
-        <a href="${CONFIG.social.github}" data-magnetic>${ICONS.github} GitHub</a>
-        <a href="#" data-magnetic>${ICONS.arrow} Live demo</a>
-      </div>`;
-    el.addEventListener('mousemove', (e) => {
-      const r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', (e.clientX-r.left)+'px');
-      el.style.setProperty('--my', (e.clientY-r.top)+'px');
-    });
-    grid.appendChild(el);
-  });
-
-  /* ---------- LEARNING CARDS ---------- */
-  const learnScroll = document.getElementById('learnScroll');
-  CONFIG.learning.forEach((l,i) => {
-    const el = document.createElement('div');
-    el.className = 'learn-card';
-    el.innerHTML = `<div class="stat-num">${String(i+1).padStart(2,'0')}</div><h4>${l}</h4>`;
-    learnScroll.appendChild(el);
-  });
-
   /* ---------- CONTACT LINKS ---------- */
   const contactLinks = document.getElementById('contactLinks');
   [['github','GitHub'],['linkedin','LinkedIn'],['leetcode','LeetCode']].forEach(([key,label]) => {
@@ -266,7 +207,10 @@ document.addEventListener('DOMContentLoaded', () => {
       track.style.animationDuration = (speeds[i % speeds.length]) + 's';
 
       // duplicate the skill list so the loop is seamless
-      const chipsHTML = cat.skills.map(s => `<span class="skill-chip"><span class="chip-dot"></span>${s}</span>`).join('');
+      const chipsHTML = cat.skills.map(s => {
+        const level = s.level ? `<span class="chip-level">${s.level}</span>` : '';
+        return `<span class="skill-chip"><span class="chip-dot"></span>${s.name}${level}</span>`;
+      }).join('');
       track.innerHTML = chipsHTML + chipsHTML;
 
       row.appendChild(track);
@@ -332,6 +276,178 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       nextLine();
     }
+  })();
+
+  /* ---------- ABOUT: neural particle canvas around the portrait ---------- */
+  (function aboutNetwork(){
+    const stageEl = document.querySelector('.about-portrait-stage');
+    const canvas = document.getElementById('aboutCanvas');
+    if (!stageEl || !canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, dpr, nodes = [];
+    const COUNT = isTouch ? 14 : 22;
+
+    function resize(){
+      dpr = window.devicePixelRatio || 1;
+      w = stageEl.clientWidth; h = stageEl.clientHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    function makeNodes(){
+      nodes = Array.from({length: COUNT}, () => ({
+        x: Math.random()*w, y: Math.random()*h,
+        vx: (Math.random()-0.5)*0.16, vy: (Math.random()-0.5)*0.16,
+        r: Math.random()*1.3+0.6
+      }));
+    }
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      nodes.forEach(n => {
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < 0 || n.x > w) n.vx *= -1;
+        if (n.y < 0 || n.y > h) n.vy *= -1;
+      });
+      for (let a=0;a<nodes.length;a++){
+        for (let b=a+1;b<nodes.length;b++){
+          const dx = nodes[a].x-nodes[b].x, dy = nodes[a].y-nodes[b].y;
+          const d = Math.sqrt(dx*dx+dy*dy);
+          if (d < 90){
+            ctx.strokeStyle = `rgba(69,216,242,${(1-d/90)*0.3})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(nodes[a].x,nodes[a].y); ctx.lineTo(nodes[b].x,nodes[b].y); ctx.stroke();
+          }
+        }
+      }
+      nodes.forEach(n => {
+        ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+        ctx.fillStyle = 'rgba(180,240,255,0.85)'; ctx.fill();
+      });
+      if (!reduceMotion) requestAnimationFrame(draw);
+    }
+    resize(); makeNodes();
+    if (reduceMotion) { draw(); } else { draw(); }
+    window.addEventListener('resize', () => { resize(); makeNodes(); }, { passive:true });
+  })();
+
+  /* ---------- ABOUT: portrait tilt + mouse-follow glow ---------- */
+  (function aboutTilt(){
+    const stageEl = document.querySelector('.about-portrait-stage');
+    const frame = document.getElementById('aboutPortraitFrame');
+    if (!stageEl || !frame || reduceMotion) return;
+    stageEl.addEventListener('mousemove', (e) => {
+      const r = stageEl.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      frame.style.transform = `rotateY(${px*10}deg) rotateX(${-py*10}deg)`;
+    });
+    stageEl.addEventListener('mouseleave', () => { frame.style.transform = ''; });
+  })();
+
+  /* ---------- PROJECTS: coming-soon terminal type loop ---------- */
+  (function comingSoonType(){
+    const el = document.getElementById('csType');
+    const section = document.getElementById('projects');
+    if (!el || !section) return;
+    const lines = ['building_next_project.py', 'status: in_development', 'check_back_soon()'];
+    let li = 0, ci = 0, deleting = false, started = false;
+
+    function tick(){
+      const line = lines[li];
+      if (!deleting){
+        ci++;
+        el.textContent = line.slice(0, ci);
+        if (ci === line.length){ deleting = true; setTimeout(tick, 1400); return; }
+      } else {
+        ci--;
+        el.textContent = line.slice(0, ci);
+        if (ci === 0){ deleting = false; li = (li+1) % lines.length; }
+      }
+      setTimeout(tick, deleting ? 28 : 55);
+    }
+    if (reduceMotion){ el.textContent = lines[0]; return; }
+    const tio = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting && !started){ started = true; tick(); tio.disconnect(); } });
+    }, { threshold: 0.3 });
+    tio.observe(section);
+  })();
+
+  /* ---------- JOURNEY: animate the timeline fill on reveal ---------- */
+  (function timelineFill(){
+    const timeline = document.getElementById('timeline');
+    if (!timeline) return;
+    const tio = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting){ timeline.classList.add('is-active'); tio.disconnect(); } });
+    }, { threshold: 0.25 });
+    tio.observe(timeline);
+  })();
+
+  /* ---------- RESUME: detect whether resume.pdf actually exists ---------- */
+  (function resumeCheck(){
+    const status = document.getElementById('resumeStatus');
+    const viewBtn = document.getElementById('viewResumeBtn');
+    const downloadBtn = document.getElementById('downloadResumeBtn');
+    if (!status || !viewBtn || !downloadBtn) return;
+    fetch('resume.pdf', { method: 'HEAD' }).then(res => {
+      if (!res.ok) throw new Error('missing');
+      status.textContent = 'View or download my latest resume below.';
+    }).catch(() => {
+      status.textContent = 'Resume coming soon. Add resume.pdf to the project root to activate these buttons.';
+      [viewBtn, downloadBtn].forEach(btn => {
+        btn.setAttribute('aria-disabled', 'true');
+        btn.classList.add('is-disabled');
+        btn.addEventListener('click', (e) => e.preventDefault());
+      });
+    });
+  })();
+
+  /* ---------- CONTACT FORM: front-end validation only ---------- */
+  (function contactForm(){
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+    const fields = {
+      name: { input: document.getElementById('cfName'), error: document.getElementById('cfNameError') },
+      email: { input: document.getElementById('cfEmail'), error: document.getElementById('cfEmailError') },
+      message: { input: document.getElementById('cfMessage'), error: document.getElementById('cfMessageError') }
+    };
+    const status = document.getElementById('cfStatus');
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function validate(){
+      let ok = true;
+      if (!fields.name.input.value.trim()){
+        fields.name.error.textContent = 'Please enter your name.'; ok = false;
+      } else fields.name.error.textContent = '';
+
+      if (!emailRe.test(fields.email.input.value.trim())){
+        fields.email.error.textContent = 'Please enter a valid email.'; ok = false;
+      } else fields.email.error.textContent = '';
+
+      if (fields.message.input.value.trim().length < 10){
+        fields.message.error.textContent = 'Message should be at least 10 characters.'; ok = false;
+      } else fields.message.error.textContent = '';
+
+      return ok;
+    }
+
+    Object.values(fields).forEach(f => {
+      f.input.addEventListener('blur', validate);
+      f.input.addEventListener('input', () => { if (f.error.textContent) validate(); });
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validate()){
+        status.textContent = 'Please fix the highlighted fields.';
+        status.classList.remove('is-success');
+        status.classList.add('is-error');
+        return;
+      }
+      status.textContent = 'Message ready — connect a backend or email service to deliver it.';
+      status.classList.remove('is-error');
+      status.classList.add('is-success');
+      form.reset();
+    });
   })();
 
   /* ---------- MOBILE NAV FALLBACK: smooth scroll already via CSS ---------- */
