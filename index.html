@@ -178,13 +178,25 @@
   }
 </style>
 </head>
-<body>
+<body class="intro-lock">
+
+<!-- PAGE-LOAD SWIPE INTRO -->
+<div id="pageIntro" aria-hidden="true">
+  <span class="intro-bar" style="--bar-color:#22d3ee; --bar-delay:0s"></span>
+  <span class="intro-bar" style="--bar-color:#8b5cf6; --bar-delay:.06s"></span>
+  <span class="intro-bar" style="--bar-color:#f472b6; --bar-delay:.12s"></span>
+  <span class="intro-bar" style="--bar-color:#34d399; --bar-delay:.18s"></span>
+  <span class="intro-bar" style="--bar-color:#fbbf24; --bar-delay:.24s"></span>
+</div>
+
+<div id="scrollProgress" aria-hidden="true"></div>
 
 <canvas id="bg-canvas"></canvas>
 <div class="grain"></div>
 <div class="vignette"></div>
 <div id="cursor-ring"></div>
 <div id="cursor-dot"></div>
+<canvas id="cursorTrail" aria-hidden="true"></canvas>
 
 <!-- NAV -->
 <nav class="nav" id="nav">
@@ -248,6 +260,10 @@
     </div>
 
     <div class="portrait-stage">
+      <div class="portrait-orbit" aria-hidden="true">
+        <span class="portrait-spark spark-1"></span>
+        <span class="portrait-spark spark-2"></span>
+      </div>
       <div class="portrait-card" id="portraitCard">
         <div class="portrait-ring" aria-hidden="true"></div>
         <div class="portrait-glow"></div>
@@ -469,7 +485,7 @@
     <div class="contact-grid">
       <div class="contact-inner reveal">
         <span class="eyebrow">Get in touch</span>
-        <h2>Let's build the future.</h2>
+        <h2 class="glow-heading">Let's build the future.</h2>
         <p>Have an opportunity, idea, or collaboration in mind? Let's connect.</p>
         <a href="mailto:prashanthsureshdevi@gmail.com">prashanthsureshdevi@gmail.com</a>
         <div class="contact-actions" id="contactLinks"></div>
@@ -631,11 +647,15 @@
     var rect = heroEl.getBoundingClientRect();
     mouse.x = e.clientX - rect.left;
     mouse.y = e.clientY - rect.top;
+    heroEl.style.setProperty('--mx', mouse.x + 'px');
+    heroEl.style.setProperty('--my', mouse.y + 'px');
   }, { passive: true });
 
   heroEl.addEventListener('mouseleave', function(){
     mouse.x = null;
     mouse.y = null;
+    heroEl.style.removeProperty('--mx');
+    heroEl.style.removeProperty('--my');
   });
 
   // subtle portrait tilt on hover (desktop only, skipped for reduced motion)
