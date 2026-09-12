@@ -7,7 +7,8 @@ const CONFIG = {
   social: {
     github: "https://github.com/PrashanthSureshDevi",
     linkedin: "https://www.linkedin.com/in/prashanth-s-665268422",
-    leetcode: "https://leetcode.com/u/prashanthaiml/"
+    leetcode: "https://leetcode.com/u/prashanthaiml/",
+    instagram: "https://www.instagram.com/itz_prashanth_17_/"
   },
   stack: [
     { name: "Programming Languages", skills: [
@@ -55,6 +56,7 @@ const ICONS = {
   github: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.98 5.24.98 11.52c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55v-2.17c-3.16.69-3.83-1.34-3.83-1.34-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.72-1.53-2.52-.29-5.17-1.26-5.17-5.6 0-1.24.44-2.25 1.17-3.04-.12-.29-.5-1.46.11-3.04 0 0 .96-.31 3.15 1.16a10.9 10.9 0 0 1 5.74 0c2.18-1.47 3.14-1.16 3.14-1.16.62 1.58.23 2.75.11 3.04.73.79 1.17 1.8 1.17 3.04 0 4.35-2.66 5.3-5.19 5.58.41.35.77 1.04.77 2.1v3.11c0 .3.2.66.79.55A11.03 11.03 0 0 0 23 11.52C23 5.24 18.27.5 12 .5z"/></svg>',
   linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>',
   leetcode: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2.3 6.3 9.5c-1 1-1 2.6 0 3.6l5.2 5.2c1 1 2.6 1 3.6 0l2-2c.5-.5.5-1.3 0-1.8-.5-.5-1.3-.5-1.8 0l-2 2-5.2-5.2 7.2-7.2c.5-.5.5-1.3 0-1.8-.5-.5-1.3-.5-1.8 0zM9 15.5h9.5c.7 0 1.3.6 1.3 1.3s-.6 1.3-1.3 1.3H9c-.7 0-1.3-.6-1.3-1.3s.6-1.3 1.3-1.3z"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.6" cy="6.4" r="1.15" fill="currentColor" stroke="none"/></svg>',
   arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>'
 };
 
@@ -125,6 +127,84 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 40);
   }, { passive: true });
+
+  /* ---------- MOBILE NAV TOGGLE ---------- */
+  (function mobileNav(){
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    if (!toggle || !links) return;
+
+    function closeMenu(){
+      links.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+    }
+    function openMenu(){
+      links.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close menu');
+    }
+
+    toggle.addEventListener('click', () => {
+      const isOpen = links.classList.contains('is-open');
+      isOpen ? closeMenu() : openMenu();
+    });
+
+    links.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!links.classList.contains('is-open')) return;
+      if (links.contains(e.target) || toggle.contains(e.target)) return;
+      closeMenu();
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 980) closeMenu();
+    }, { passive: true });
+  })();
+
+  /* ---------- NAV ACTIVE-SECTION INDICATOR ---------- */
+  (function navScrollSpy(){
+    const navLinkEls = Array.from(document.querySelectorAll('.nav-links a'));
+    if (!navLinkEls.length) return;
+    const targets = navLinkEls
+      .map(a => ({ link: a, section: document.querySelector(a.getAttribute('href')) }))
+      .filter(t => t.section);
+    if (!targets.length) return;
+
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const match = targets.find(t => t.section === entry.target);
+        if (!match) return;
+        if (entry.isIntersecting) {
+          navLinkEls.forEach(a => a.classList.remove('is-active'));
+          match.link.classList.add('is-active');
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+
+    targets.forEach(t => spy.observe(t.section));
+  })();
+
+  /* ---------- BACK TO TOP ---------- */
+  (function backToTop(){
+    const btn = document.getElementById('backToTop');
+    const heroEl = document.getElementById('hero');
+    if (!btn || !heroEl) return;
+
+    window.addEventListener('scroll', () => {
+      const past = window.scrollY > heroEl.offsetHeight * 0.6;
+      btn.classList.toggle('is-visible', past);
+    }, { passive: true });
+
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  })();
 
   /* ---------- SCROLL PROGRESS BAR ---------- */
   (function scrollProgress(){
@@ -245,19 +325,23 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ---------- CONTACT LINKS ---------- */
+  const SOCIAL_LINKS = [['github','GitHub'],['linkedin','LinkedIn'],['leetcode','LeetCode'],['instagram','Instagram']];
+
   const contactLinks = document.getElementById('contactLinks');
-  [['github','GitHub'],['linkedin','LinkedIn'],['leetcode','LeetCode']].forEach(([key,label]) => {
+  SOCIAL_LINKS.forEach(([key,label]) => {
     const a = document.createElement('a');
     a.href = CONFIG.social[key]; a.className = 'contact-link'; a.setAttribute('data-magnetic','');
+    a.target = '_blank'; a.rel = 'noopener noreferrer';
     a.innerHTML = `${ICONS[key]} ${label}`;
     contactLinks.appendChild(a);
   });
 
   /* ---------- SOCIAL BAR ICONS ---------- */
   const socialIcons = document.getElementById('socialIcons');
-  [['github','GitHub'],['linkedin','LinkedIn'],['leetcode','LeetCode']].forEach(([key,label]) => {
+  SOCIAL_LINKS.forEach(([key,label]) => {
     const a = document.createElement('a');
     a.href = CONFIG.social[key]; a.setAttribute('aria-label', label); a.setAttribute('data-magnetic','');
+    a.target = '_blank'; a.rel = 'noopener noreferrer';
     a.innerHTML = ICONS[key];
     socialIcons.appendChild(a);
   });
