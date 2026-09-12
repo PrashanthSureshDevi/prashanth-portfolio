@@ -297,6 +297,12 @@
 
 <!-- ABOUT -->
 <section id="about">
+  <div class="about-holo-bg" aria-hidden="true">
+    <div class="about-holo-grid"></div>
+    <span class="about-holo-circle circle-1"></span>
+    <span class="about-holo-circle circle-2"></span>
+    <span class="about-holo-circle circle-3"></span>
+  </div>
   <div class="wrap">
     <div class="about-grid-v2">
 
@@ -309,12 +315,19 @@
         <div class="about-portrait-ring" aria-hidden="true"></div>
         <div class="about-portrait-frame" id="aboutPortraitFrame">
           <img src="about-photo.jpeg" alt="Portrait of Prashanth S" width="720" height="1280">
+          <div class="about-scan" aria-hidden="true"></div>
+        </div>
+        <div class="about-hud-badge hud-top" aria-hidden="true">
+          <span class="hud-dot"></span>STATUS: TRAINING
+        </div>
+        <div class="about-hud-badge hud-bottom" aria-hidden="true">
+          FOCUS: LLM / RAG
         </div>
       </div>
 
       <div class="about-copy">
         <span class="eyebrow">About me</span>
-        <h2 class="about-heading reveal">Engineering intelligence, one system at a time.</h2>
+        <h2 class="about-heading reveal" id="aboutHeading">Engineering intelligence, one system at a time.</h2>
 
         <div class="about-status reveal" data-magnetic>
           <span class="status-dot" aria-hidden="true"></span>
@@ -369,6 +382,48 @@
         </div>
       </div>
 
+    </div>
+
+    <div class="tech-orbit-wrap reveal">
+      <p class="tech-orbit-caption">Technologies currently orbiting my workflow.</p>
+      <div class="tech-orbit" id="techOrbit" role="img" aria-label="AI and ML orbit diagram: Python, Machine Learning, LLMs, NLP, RAG, Generative AI, DSA and Web Development connected to a central AI/ML node">
+        <div class="tech-orbit-ring ring-outer" aria-hidden="true"></div>
+        <div class="tech-orbit-ring ring-inner" aria-hidden="true"></div>
+        <div class="tech-orbit-center"><span>AI / ML</span></div>
+
+        <div class="spoke" style="--angle:0deg;--radius:172px;--dur:24s;">
+          <span class="spoke-line"></span>
+          <span class="spoke-node">Python</span>
+        </div>
+        <div class="spoke" style="--angle:45deg;--radius:150px;--dur:19s;">
+          <span class="spoke-line"></span>
+          <span class="spoke-node">ML</span>
+        </div>
+        <div class="spoke" style="--angle:90deg;--radius:172px;--dur:27s;">
+          <span class="spoke-line"></span>
+          <span class="spoke-node">LLMs</span>
+        </div>
+        <div class="spoke" style="--angle:135deg;--radius:150px;--dur:21s;">
+          <span class="spoke-line"></span>
+          <span class="spoke-node">NLP</span>
+        </div>
+        <div class="spoke" style="--angle:180deg;--radius:172px;--dur:25s;">
+          <span class="spoke-line"></span>
+          <span class="spoke-node">RAG</span>
+        </div>
+        <div class="spoke" style="--angle:225deg;--radius:150px;--dur:18s;">
+          <span class="spoke-line"></span>
+          <span class="spoke-node">Gen AI</span>
+        </div>
+        <div class="spoke" style="--angle:270deg;--radius:172px;--dur:23s;">
+          <span class="spoke-line"></span>
+          <span class="spoke-node">DSA</span>
+        </div>
+        <div class="spoke" style="--angle:315deg;--radius:150px;--dur:20s;">
+          <span class="spoke-line"></span>
+          <span class="spoke-node">Web Dev</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
