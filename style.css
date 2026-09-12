@@ -473,3 +473,120 @@ footer{padding:40px 0;}
     animation:none !important;
   }
 }
+
+/* ======================================================
+   MODERN UPGRADES — added
+   ====================================================== */
+
+/* ---- Page-load swipe intro ---- */
+#pageIntro{position:fixed;inset:0;z-index:10000;display:flex;pointer-events:none;}
+#pageIntro .intro-bar{
+  flex:1;background:var(--bar-color);transform-origin:top;
+  animation:introSwipe .9s var(--ease) forwards;
+  animation-delay:var(--bar-delay,0s);
+}
+@keyframes introSwipe{ to{ transform:scaleY(0); } }
+body.intro-lock{overflow:hidden;}
+
+/* ---- Scroll progress bar ---- */
+#scrollProgress{
+  position:fixed;top:0;left:0;height:3px;width:0%;z-index:9997;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2),#f472b6);
+  background-size:200% auto;
+  box-shadow:0 0 10px rgba(69,216,242,.55);
+  transition:width .12s linear;
+}
+
+/* ---- Colorful trailing cursor ---- */
+#cursor-dot{animation:cursorHue 4s linear infinite;}
+#cursor-ring{animation:cursorHue 6s linear infinite;}
+@keyframes cursorHue{ from{ filter:hue-rotate(0deg); } to{ filter:hue-rotate(360deg); } }
+#cursorTrail{position:fixed;inset:0;z-index:9998;pointer-events:none;}
+body.no-custom-cursor #cursorTrail{display:none;}
+
+/* ---- Contact heading: animated gradient glow ---- */
+.glow-heading{
+  background:linear-gradient(120deg,var(--accent),var(--accent-2),#f472b6,var(--accent));
+  background-size:280% auto;
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+  animation:headingFlow 7s ease infinite;
+  display:inline-block;
+}
+.glow-heading::after{
+  content:"";display:block;width:64px;height:3px;margin-top:16px;border-radius:100px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  box-shadow:0 0 12px rgba(69,216,242,.5);
+}
+@keyframes headingFlow{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* ---- Hero cursor-follow spotlight ---- */
+#hero::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%), rgba(69,216,242,.10), transparent 70%);
+}
+
+/* ---- Hero portrait: orbiting sparks + stronger ring glow ---- */
+#hero .portrait-orbit{position:absolute;inset:-50px;pointer-events:none;z-index:0;}
+#hero .portrait-spark{
+  position:absolute;top:50%;left:50%;width:7px;height:7px;border-radius:50%;
+  background:var(--hero-accent);box-shadow:0 0 10px var(--hero-accent),0 0 22px var(--hero-accent-2);
+}
+#hero .portrait-spark.spark-1{animation:heroOrbitA 7s linear infinite;}
+#hero .portrait-spark.spark-2{
+  background:var(--hero-accent-2);box-shadow:0 0 10px var(--hero-accent-2),0 0 22px var(--hero-accent);
+  animation:heroOrbitB 10s linear infinite reverse;
+}
+@keyframes heroOrbitA{
+  from{transform:translate(-50%,-50%) rotate(0deg) translateX(200px) rotate(0deg);}
+  to{transform:translate(-50%,-50%) rotate(360deg) translateX(200px) rotate(-360deg);}
+}
+@keyframes heroOrbitB{
+  from{transform:translate(-50%,-50%) rotate(0deg) translateX(230px) rotate(0deg);}
+  to{transform:translate(-50%,-50%) rotate(360deg) translateX(230px) rotate(-360deg);}
+}
+@keyframes ringGlowPulse{
+  0%,100%{filter:drop-shadow(0 0 6px rgba(34,211,238,.4));}
+  50%{filter:drop-shadow(0 0 20px rgba(139,92,246,.6));}
+}
+#hero .portrait-stage .portrait-ring{animation:heroSpin 10s linear infinite, ringGlowPulse 3.2s ease-in-out infinite;}
+.about-portrait-ring{animation:orbitSpin 10s linear infinite, ringGlowPulse 3.2s ease-in-out infinite;}
+
+@media (max-width:640px){
+  @keyframes heroOrbitA{
+    from{transform:translate(-50%,-50%) rotate(0deg) translateX(120px) rotate(0deg);}
+    to{transform:translate(-50%,-50%) rotate(360deg) translateX(120px) rotate(-360deg);}
+  }
+  @keyframes heroOrbitB{
+    from{transform:translate(-50%,-50%) rotate(0deg) translateX(140px) rotate(0deg);}
+    to{transform:translate(-50%,-50%) rotate(360deg) translateX(140px) rotate(-360deg);}
+  }
+}
+
+/* ---- Skills: shimmer sweep + gentle float + per-row color ---- */
+.skill-chip{position:relative;overflow:hidden;animation:chipFloat 3.6s ease-in-out infinite;}
+.skill-chip::before{
+  content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.28),transparent);
+  transform:skewX(-18deg);transition:left .65s ease;pointer-events:none;
+}
+.skill-chip:hover::before{left:130%;}
+@keyframes chipFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+
+.stack-row-label{color:var(--row-accent, var(--text-mute));border-color:var(--row-accent, var(--border));}
+.stack-row .chip-dot{background:var(--row-accent, var(--accent));box-shadow:0 0 6px var(--row-accent, var(--accent));}
+.stack-row .skill-chip:hover{
+  border-color:var(--row-accent, var(--accent));color:var(--text);
+  box-shadow:0 8px 22px -12px var(--row-accent, var(--accent));
+}
+
+/* ---- Refined section reveal (blur + scale + fade) ---- */
+.reveal{
+  opacity:0;transform:translateY(28px) scale(.98);filter:blur(6px);
+  transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease);
+}
+.reveal.is-visible{opacity:1;transform:translateY(0) scale(1);filter:blur(0);}
