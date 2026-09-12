@@ -436,18 +436,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!validate()){
-        status.textContent = 'Please fix the highlighted fields.';
-        status.classList.remove('is-success');
-        status.classList.add('is-error');
-        return;
-      }
-      status.textContent = 'Message ready — connect a backend or email service to deliver it.';
-      status.classList.remove('is-error');
+  e.preventDefault();
+
+  if (!validate()){
+    status.textContent = 'Please fix the highlighted fields.';
+    status.classList.remove('is-success');
+    status.classList.add('is-error');
+    return;
+  }
+
+  status.textContent = 'Sending...';
+  status.classList.remove('is-error', 'is-success');
+
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok) {
+      status.textContent = 'Message sent — thank you!';
       status.classList.add('is-success');
       form.reset();
-    });
+    } else {
+      return response.json().then(data => {
+        throw new Error(data?.errors?.map(e => e.message).join(', ') || 'Submission failed.');
+      });
+    }
+  })
+  .catch(err => {
+    status.textContent = err.message || 'Something went wrong. Please try again.';
+    status.classList.add('is-error');
+  });
+});
   })();
 
   /* ---------- MOBILE NAV FALLBACK: smooth scroll already via CSS ---------- */
