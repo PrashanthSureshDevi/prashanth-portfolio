@@ -194,6 +194,7 @@
     <li><a href="#stack" data-magnetic>AI Stack</a></li>
     <li><a href="#projects" data-magnetic>Projects</a></li>
     <li><a href="#journey" data-magnetic>Journey</a></li>
+    <li><a href="#resume" data-magnetic>Resume</a></li>
     <li><a href="#contact" data-magnetic>Contact</a></li>
   </ul>
   <a href="#contact" class="nav-cta" data-magnetic>Let's connect</a>
@@ -272,19 +273,77 @@
 <!-- ABOUT -->
 <section id="about">
   <div class="wrap">
-    <div class="about-grid">
-      <div class="about-text reveal">
-        <span class="eyebrow">About the engineer</span>
-        <p>I'm Prashanth S, an aspiring AI/ML Engineer focused on understanding and building intelligent systems.</p>
-        <p>My journey in technology is centered around Python, Machine Learning, LLMs, NLP, RAG and Generative AI. I'm continuously learning, experimenting, and building projects that connect AI with practical real-world applications.</p>
-        <p>I'm especially interested in how modern AI systems can reason, retrieve information, automate workflows, and create useful experiences.</p>
+    <div class="about-grid-v2">
+
+      <div class="about-portrait-stage reveal">
+        <canvas id="aboutCanvas" class="about-canvas" aria-hidden="true"></canvas>
+        <div class="about-orbit orbit-1" aria-hidden="true"></div>
+        <div class="about-orbit orbit-2" aria-hidden="true"></div>
+        <div class="about-spark spark-a" aria-hidden="true"></div>
+        <div class="about-spark spark-b" aria-hidden="true"></div>
+        <div class="about-portrait-ring" aria-hidden="true"></div>
+        <div class="about-portrait-frame" id="aboutPortraitFrame">
+          <img src="about-photo.jpeg" alt="Portrait of Prashanth S" width="720" height="1280">
+        </div>
       </div>
-      <div class="about-stats reveal">
-        <div class="stat-card"><div class="stat-num">01</div><div class="stat-label">Machine Learning</div></div>
-        <div class="stat-card"><div class="stat-num">02</div><div class="stat-label">LLMs &amp; NLP</div></div>
-        <div class="stat-card"><div class="stat-num">03</div><div class="stat-label">RAG &amp; Gen AI</div></div>
-        <div class="stat-card"><div class="stat-num">04</div><div class="stat-label">AI Systems</div></div>
+
+      <div class="about-copy">
+        <span class="eyebrow">About me</span>
+        <h2 class="about-heading reveal">Engineering intelligence, one system at a time.</h2>
+
+        <div class="about-status reveal" data-magnetic>
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Currently learning AI &amp; ML</span>
+        </div>
+
+        <p class="about-intro reveal">Hi, I'm Prashanth S. I'm an AI &amp; ML student focused on building my foundation in intelligent systems and modern AI technologies. I'm continuously learning and experimenting with Machine Learning, Deep Learning, NLP, LLMs, RAG and Generative AI while strengthening my programming, problem-solving and development skills.</p>
+
+        <div class="about-cards reveal">
+          <div class="glass-card">
+            <div class="gc-label">Card 01</div>
+            <h4>AI / ML</h4>
+            <ul>
+              <li>Machine Learning</li>
+              <li>Deep Learning</li>
+              <li>NLP</li>
+              <li>LLMs</li>
+              <li>RAG</li>
+              <li>Generative AI</li>
+            </ul>
+          </div>
+          <div class="glass-card">
+            <div class="gc-label">Card 02</div>
+            <h4>Building</h4>
+            <ul>
+              <li>Intelligent systems</li>
+              <li>AI-powered applications</li>
+              <li>Modern web experiences</li>
+            </ul>
+          </div>
+          <div class="glass-card">
+            <div class="gc-label">Card 03</div>
+            <h4>Growing</h4>
+            <ul>
+              <li>DSA &amp; Algorithms</li>
+              <li>Problem solving</li>
+              <li>Web development</li>
+              <li>AI/ML engineering</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="about-chip-row reveal" aria-label="Currently exploring">
+          <span class="skill-chip"><span class="chip-dot"></span>Machine Learning</span>
+          <span class="skill-chip"><span class="chip-dot"></span>LLMs</span>
+          <span class="skill-chip"><span class="chip-dot"></span>NLP</span>
+          <span class="skill-chip"><span class="chip-dot"></span>RAG</span>
+          <span class="skill-chip"><span class="chip-dot"></span>Generative AI</span>
+          <span class="skill-chip"><span class="chip-dot"></span>Python</span>
+          <span class="skill-chip"><span class="chip-dot"></span>DSA</span>
+          <span class="skill-chip"><span class="chip-dot"></span>Web Development</span>
+        </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -306,45 +365,87 @@
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">Selected work</span>
-      <h2>Building intelligent systems</h2>
-      <p>Placeholder case studies — swap these for your own projects in the CONFIG object at the top of the script.</p>
+      <h2>Projects</h2>
     </div>
-    <div class="project-grid reveal" id="projectGrid"></div>
+    <div class="coming-soon reveal">
+      <div class="cs-visual" aria-hidden="true">
+        <span class="cs-bracket cs-bracket-l">&lt;</span>
+        <div class="cs-terminal">
+          <div class="cs-terminal-line"><span class="prompt">&gt;</span><span class="cs-type" id="csType"></span><span class="term-cursor"></span></div>
+        </div>
+        <span class="cs-bracket cs-bracket-r">&gt;</span>
+      </div>
+      <h3>Building in progress</h3>
+      <p>Real projects are currently being developed. Check back soon.</p>
+      <div class="cs-progress" role="progressbar" aria-label="Projects in development" aria-valuemin="0" aria-valuemax="100" aria-valuenow="35">
+        <div class="cs-progress-fill"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- FEATURED -->
-<section id="featured">
+<!-- JOURNEY -->
+<section id="journey">
   <div class="wrap">
-    <div class="featured reveal">
-      <div class="featured-visual"><canvas id="rag-canvas"></canvas></div>
-      <div class="featured-body">
-        <div class="project-num">Project 01</div>
-        <h3>RAG Intelligence</h3>
-        <p>An intelligent retrieval-augmented system designed to connect language models with external knowledge.</p>
-        <div class="tech-row">
-          <span class="tech-tag">Python</span><span class="tech-tag">LLM</span><span class="tech-tag">RAG</span>
-          <span class="tech-tag">Embeddings</span><span class="tech-tag">Vector DB</span><span class="tech-tag">NLP</span>
+    <div class="section-head reveal">
+      <span class="eyebrow">Milestones</span>
+      <h2>My journey so far</h2>
+    </div>
+    <div class="timeline reveal" id="timeline">
+      <div class="timeline-track" aria-hidden="true"><div class="timeline-track-fill"></div></div>
+
+      <div class="timeline-item is-complete">
+        <div class="timeline-node"><span>01</span></div>
+        <div class="timeline-card">
+          <div class="tc-status status-complete">Completed</div>
+          <h4>First Year — AI/ML</h4>
+          <p>Building the foundation in AI &amp; ML, programming and core technical concepts.</p>
         </div>
-        <div class="featured-actions">
-          <a href="#" class="btn btn-primary" data-magnetic>View project</a>
-          <a href="#" class="btn btn-outline" data-magnetic>View GitHub</a>
+      </div>
+
+      <div class="timeline-item is-complete">
+        <div class="timeline-node"><span>02</span></div>
+        <div class="timeline-card">
+          <div class="tc-status status-complete">Completed</div>
+          <h4>Portfolio</h4>
+          <p>Designing and developing my personal AI/ML Engineer portfolio.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item is-upcoming">
+        <div class="timeline-node"><span>03</span></div>
+        <div class="timeline-card">
+          <div class="tc-status status-upcoming">Coming soon</div>
+          <h4>Internship</h4>
+          <p>Next step: gaining practical industry experience and applying my skills.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- LEARNING -->
-<section id="journey">
+<!-- RESUME -->
+<section id="resume">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">Currently exploring</span>
-      <h2>What I'm learning right now</h2>
+      <span class="eyebrow">Credentials</span>
+      <h2>My resume</h2>
+      <p>Explore my education, skills and learning journey.</p>
     </div>
-  </div>
-  <div class="wrap">
-    <div class="learn-scroll reveal" id="learnScroll"></div>
+    <div class="resume-card reveal">
+      <div class="resume-card-glow" aria-hidden="true"></div>
+      <div class="resume-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6M9 9h1"/></svg>
+      </div>
+      <div class="resume-info">
+        <h4>Prashanth S — Resume</h4>
+        <p id="resumeStatus">Resume coming soon. Once added, these buttons will open and download it directly.</p>
+      </div>
+      <div class="resume-actions">
+        <a href="resume.pdf" target="_blank" rel="noopener" class="btn btn-outline resume-btn" id="viewResumeBtn" data-magnetic>View resume</a>
+        <a href="resume.pdf" download class="btn btn-primary resume-btn" id="downloadResumeBtn" data-magnetic>Download resume</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -365,11 +466,37 @@
 <!-- CONTACT -->
 <section id="contact">
   <div class="wrap">
-    <div class="contact-inner reveal">
-      <span class="eyebrow">Get in touch</span>
-      <h2>Let's build the future.</h2>
-      <p>Interested in AI, intelligent systems, or building something meaningful? Let's connect.</p>
-      <div class="contact-actions" id="contactLinks"></div>
+    <div class="contact-grid">
+      <div class="contact-inner reveal">
+        <span class="eyebrow">Get in touch</span>
+        <h2>Let's build the future.</h2>
+        <p>Have an opportunity, idea, or collaboration in mind? Let's connect.</p>
+        <div class="contact-actions" id="contactLinks"></div>
+        <p class="contact-note">This form validates on the front end only — connecting it to a backend or email service (e.g. Formspree, EmailJS) is needed to actually deliver messages.</p>
+      </div>
+
+      <form class="contact-form reveal" id="contactForm" novalidate>
+        <div class="form-field">
+          <input type="text" id="cfName" name="name" placeholder=" " autocomplete="name" required>
+          <label for="cfName">Name</label>
+          <span class="form-error" id="cfNameError"></span>
+        </div>
+        <div class="form-field">
+          <input type="email" id="cfEmail" name="email" placeholder=" " autocomplete="email" required>
+          <label for="cfEmail">Email</label>
+          <span class="form-error" id="cfEmailError"></span>
+        </div>
+        <div class="form-field">
+          <textarea id="cfMessage" name="message" placeholder=" " rows="5" required></textarea>
+          <label for="cfMessage">Message</label>
+          <span class="form-error" id="cfMessageError"></span>
+        </div>
+        <button type="submit" class="btn btn-primary form-submit" id="cfSubmit">
+          <span>Send message</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+        </button>
+        <p class="form-status" id="cfStatus" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </div>
 </section>
