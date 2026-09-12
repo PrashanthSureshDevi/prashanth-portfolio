@@ -8,7 +8,12 @@
 <meta property="og:title" content="PRASHANTH S — AI/ML Engineer">
 <meta property="og:description" content="Engineering the future with Machine Learning, LLMs, NLP, RAG and Generative AI.">
 <meta property="og:type" content="website">
+<meta property="og:image" content="og-image.png">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#05070a">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate icon" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -180,6 +185,8 @@
 </head>
 <body class="intro-lock">
 
+<a class="skip-link" href="#hero">Skip to main content</a>
+
 <!-- PAGE-LOAD SWIPE INTRO -->
 <div id="pageIntro" aria-hidden="true">
   <span class="intro-bar" style="--bar-color:#22d3ee; --bar-delay:0s"></span>
@@ -201,7 +208,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav">
   <div class="nav-logo">PRASHANTH S</div>
-  <ul class="nav-links">
+  <ul class="nav-links" id="navLinks">
     <li><a href="#about" data-magnetic>About</a></li>
     <li><a href="#stack" data-magnetic>AI Stack</a></li>
     <li><a href="#projects" data-magnetic>Projects</a></li>
@@ -210,10 +217,13 @@
     <li><a href="#contact" data-magnetic>Contact</a></li>
   </ul>
   <a href="#contact" class="nav-cta" data-magnetic>Let's connect</a>
+  <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+    <span></span>
+  </button>
 </nav>
 
 <!-- HERO (upgraded) -->
-<header class="hero wrap" id="hero">
+<header class="hero wrap" id="hero" tabindex="-1">
   <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
 
   <div class="hero-grid">
@@ -232,21 +242,20 @@
 
       <p class="hero-intro">Building intelligent systems and exploring Machine Learning, LLMs, NLP, RAG &amp; Generative AI.</p>
 
-      <!-- TODO: replace href="#" below with your real GitHub / LinkedIn / LeetCode URLs -->
       <div class="hero-actions">
         <a href="#projects" class="btn btn-primary" data-magnetic>
           Explore My Work
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
         </a>
-        <a href="https://github.com/PrashanthSureshDevi" class="btn btn-outline" data-magnetic aria-label="GitHub profile ">
+        <a href="https://github.com/PrashanthSureshDevi" target="_blank" rel="noopener noreferrer" class="btn btn-outline" data-magnetic aria-label="GitHub profile">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.75 5.48.75 11.75c0 4.99 3.24 9.22 7.73 10.72.56.1.77-.24.77-.54 0-.27-.01-1.15-.02-2.09-3.15.68-3.81-1.34-3.81-1.34-.52-1.31-1.26-1.66-1.26-1.66-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.51-.29-5.15-1.26-5.15-5.6 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.16a10.9 10.9 0 0 1 5.72 0c2.18-1.47 3.14-1.16 3.14-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.8 1.17 3.04 0 4.35-2.64 5.31-5.16 5.59.41.35.77 1.04.77 2.11 0 1.52-.01 2.75-.01 3.12 0 .3.2.65.78.54A11.26 11.26 0 0 0 23.25 11.75C23.25 5.48 18.27.5 12 .5z"/></svg>
           GitHub
         </a>
-        <a href="https://www.linkedin.com/in/prashanth-s-665268422" class="btn btn-outline" data-magnetic aria-label="LinkedIn profile">
+        <a href="https://www.linkedin.com/in/prashanth-s-665268422" target="_blank" rel="noopener noreferrer" class="btn btn-outline" data-magnetic aria-label="LinkedIn profile">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.27 2.38 4.27 5.47v6.27zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
           LinkedIn
         </a>
-        <a href="https://leetcode.com/u/prashanthaiml/" class="btn btn-outline" data-magnetic aria-label="LeetCode profile ">
+        <a href="https://leetcode.com/u/prashanthaiml/" target="_blank" rel="noopener noreferrer" class="btn btn-outline" data-magnetic aria-label="LeetCode profile">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 4L4 12l4 8M16 4l4 8-4 8"/></svg>
           LeetCode
         </a>
@@ -531,6 +540,10 @@
     <p class="footer-tag">Engineering the future with Machine Learning, LLMs, NLP, RAG &amp; Generative AI.</p>
   </div>
 </footer>
+
+<button type="button" class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <script src="script.js"></script>
 <script>
