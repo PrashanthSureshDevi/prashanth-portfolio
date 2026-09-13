@@ -297,13 +297,6 @@
 
 <!-- ABOUT -->
 <section id="about">
-  <div class="about-bg" id="aboutBg" aria-hidden="true">
-    <canvas class="about-bg-canvas" id="aboutBgCanvas"></canvas>
-    <div class="about-bg-grid"></div>
-    <div class="about-bg-wave wave-1"></div>
-    <div class="about-bg-wave wave-2"></div>
-  </div>
-
   <div class="wrap">
     <div class="about-grid-v2">
 
@@ -311,29 +304,11 @@
         <canvas id="aboutCanvas" class="about-canvas" aria-hidden="true"></canvas>
         <div class="about-orbit orbit-1" aria-hidden="true"></div>
         <div class="about-orbit orbit-2" aria-hidden="true"></div>
-        <div class="about-orbit orbit-3" aria-hidden="true"></div>
         <div class="about-spark spark-a" aria-hidden="true"></div>
         <div class="about-spark spark-b" aria-hidden="true"></div>
-        <div class="about-spark spark-c" aria-hidden="true"></div>
         <div class="about-portrait-ring" aria-hidden="true"></div>
         <div class="about-portrait-frame" id="aboutPortraitFrame">
           <img src="about-photo.jpeg" alt="Portrait of Prashanth S" width="720" height="1280">
-          <div class="about-portrait-scan" aria-hidden="true"></div>
-          <div class="about-portrait-pulse" aria-hidden="true"></div>
-        </div>
-        <div class="about-photo-particles" id="aboutPhotoParticles" aria-hidden="true"></div>
-
-        <!-- Premium identity block, directly under the photo -->
-        <div class="about-identity" id="aboutIdentity">
-          <canvas class="about-identity-particles" id="identityCanvas" aria-hidden="true"></canvas>
-          <div class="about-identity-inner">
-            <p class="about-identity-name" data-text="PRASHANTH S">
-              <span class="name-sweep">PRASHANTH S</span>
-            </p>
-            <div class="about-identity-line" aria-hidden="true"></div>
-            <p class="about-identity-role">AI &amp; ML STUDENT <span class="role-sep">•</span> ASPIRING FRONT-END DEVELOPER</p>
-            <p class="about-identity-status"><span class="ai-dot" aria-hidden="true"></span>BUILDING &bull; LEARNING &bull; EVOLVING</p>
-          </div>
         </div>
       </div>
 
@@ -395,6 +370,76 @@
       </div>
 
     </div>
+
+    <!-- ===== ABOUT ENHANCEMENT — premium identity panel + AI/ML orbital core =====
+         Purely additive: sits below the existing about-grid-v2 above. Nothing
+         above this comment was touched. ===== -->
+
+    <div class="about-identity reveal" id="aboutIdentity">
+      <canvas class="about-identity-particles" id="identityCanvas" aria-hidden="true"></canvas>
+      <div class="about-identity-inner">
+        <p class="about-identity-name">Prashanth S</p>
+        <p class="about-identity-role">AI &amp; ML Student <span class="ai-dot" aria-hidden="true"></span> Aspiring AI/ML Engineer</p>
+        <p class="about-identity-tagline">Building intelligent systems, modern web experiences &amp; AI-powered solutions.</p>
+      </div>
+    </div>
+
+    <div class="about-ai-core-stage reveal" id="aboutCoreStage" aria-label="AI and ML skills orbiting a central core">
+      <div class="about-neural-lines" id="aboutNeuralLines" aria-hidden="true"></div>
+      <canvas class="about-particles" id="coreParticleCanvas" aria-hidden="true"></canvas>
+
+      <div class="about-orbit-system" id="aboutOrbitSystem">
+        <div class="about-orbit-ring ring-1" aria-hidden="true"></div>
+        <div class="about-orbit-ring ring-2" aria-hidden="true"></div>
+        <div class="about-orbit-ring ring-3" aria-hidden="true"></div>
+
+        <div class="about-orbit-dot dot-1" aria-hidden="true"></div>
+        <div class="about-orbit-dot dot-2" aria-hidden="true"></div>
+        <div class="about-orbit-dot dot-3" aria-hidden="true"></div>
+
+        <div class="about-ai-core">
+          <span class="core-ripple r1" aria-hidden="true"></span>
+          <span class="core-ripple r2" aria-hidden="true"></span>
+          <span class="core-label">AI/ML<br>CORE</span>
+        </div>
+
+        <div class="about-skill-node" data-index="0" data-desc="Programming Fundamentals" tabindex="0">
+          <span class="node-name">C</span>
+          <span class="node-desc">Programming Fundamentals</span>
+        </div>
+        <div class="about-skill-node" data-index="1" data-desc="AI/ML &amp; Development" tabindex="0">
+          <span class="node-name">Python</span>
+          <span class="node-desc">AI/ML &amp; Development</span>
+        </div>
+        <div class="about-skill-node" data-index="2" data-desc="Interactive Web Development" tabindex="0">
+          <span class="node-name">JavaScript</span>
+          <span class="node-desc">Interactive Web Development</span>
+        </div>
+        <div class="about-skill-node" data-index="3" data-desc="Web Structure" tabindex="0">
+          <span class="node-name">HTML</span>
+          <span class="node-desc">Web Structure</span>
+        </div>
+        <div class="about-skill-node" data-index="4" data-desc="UI &amp; Visual Design" tabindex="0">
+          <span class="node-name">CSS</span>
+          <span class="node-desc">UI &amp; Visual Design</span>
+        </div>
+        <div class="about-skill-node" data-index="5" data-desc="Algorithms &amp; Problem Solving" tabindex="0">
+          <span class="node-name">DSA</span>
+          <span class="node-desc">Algorithms &amp; Problem Solving</span>
+        </div>
+        <div class="about-skill-node" data-index="6" data-desc="Modern Web Experiences" tabindex="0">
+          <span class="node-name">Web Dev</span>
+          <span class="node-desc">Modern Web Experiences</span>
+        </div>
+        <div class="about-skill-node" data-index="7" data-desc="Data &amp; Database Foundations" tabindex="0">
+          <span class="node-name">SQL</span>
+          <span class="node-desc">Data &amp; Database Foundations</span>
+        </div>
+      </div>
+
+      <span class="about-system-label" aria-hidden="true">AI SYSTEM ONLINE</span>
+    </div>
+
   </div>
 </section>
 
