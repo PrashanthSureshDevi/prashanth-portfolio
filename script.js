@@ -634,3 +634,189 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- MOBILE NAV FALLBACK: smooth scroll already via CSS ---------- */
 });
+
+/* =====================================================================
+   ABOUT ENHANCEMENT — identity panel + AI/ML orbital core
+   Purely additive: does not touch any selector, id, or function above.
+   ===================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* ---------- Skill node positions around the AI/ML core ---------- */
+  (function aboutOrbitLayout(){
+    const system = document.getElementById('aboutOrbitSystem');
+    if (!system) return;
+    const nodes = Array.from(system.querySelectorAll('.about-skill-node'));
+    if (!nodes.length) return;
+
+    function place(){
+      const w = system.clientWidth;
+      if (!w) return;
+      // radius shrinks a touch on very small stages so nodes stay clear of the core
+      const radiusPct = w < 340 ? 0.40 : w < 480 ? 0.42 : 0.445;
+      const r = w * radiusPct;
+      const count = nodes.length;
+      nodes.forEach((node, i) => {
+        const angle = (Math.PI * 2 * i) / count - Math.PI / 2; // start at top, clockwise
+        const nx = Math.cos(angle) * r;
+        const ny = Math.sin(angle) * r;
+        node.style.setProperty('--nx', nx.toFixed(1) + 'px');
+        node.style.setProperty('--ny', ny.toFixed(1) + 'px');
+        node.style.setProperty('--i', i);
+      });
+    }
+
+    place();
+    window.addEventListener('resize', () => {
+      clearTimeout(place._t);
+      place._t = setTimeout(place, 120);
+    }, { passive: true });
+
+    // re-place once the reveal transition/layout has settled
+    setTimeout(place, 350);
+  })();
+
+  /* ---------- Activate the core stage (rings/particles/nodes) once visible ---------- */
+  (function aboutCoreActivate(){
+    const stage = document.getElementById('aboutCoreStage');
+    if (!stage) return;
+    const tio = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          stage.classList.add('is-active');
+          tio.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+    tio.observe(stage);
+  })();
+
+  /* ---------- Ambient particle canvas behind the identity panel ---------- */
+  (function identityParticles(){
+    const panel = document.getElementById('aboutIdentity');
+    const canvas = document.getElementById('identityCanvas');
+    if (!panel || !canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, dpr, dots = [];
+    const COUNT = isTouch ? 10 : 18;
+
+    function resize(){
+      dpr = window.devicePixelRatio || 1;
+      w = panel.clientWidth; h = panel.clientHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function make(){
+      dots = Array.from({ length: COUNT }, () => ({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.08, vy: (Math.random() - 0.5) * 0.08,
+        r: Math.random() * 1.1 + 0.5
+      }));
+    }
+    function draw(){
+      ctx.clearRect(0, 0, w, h);
+      dots.forEach(d => {
+        d.x += d.vx; d.y += d.vy;
+        if (d.x < 0 || d.x > w) d.vx *= -1;
+        if (d.y < 0 || d.y > h) d.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,240,255,0.5)';
+        ctx.fill();
+      });
+      if (!reduceMotion) requestAnimationFrame(draw);
+    }
+    resize(); make(); draw();
+    window.addEventListener('resize', () => { resize(); make(); }, { passive: true });
+  })();
+
+  /* ---------- Neural particle canvas behind the AI/ML core ---------- */
+  (function coreParticles(){
+    const stage = document.getElementById('aboutCoreStage');
+    const canvas = document.getElementById('coreParticleCanvas');
+    if (!stage || !canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, dpr, dots = [];
+    const COUNT = isTouch ? 16 : 30;
+
+    function resize(){
+      dpr = window.devicePixelRatio || 1;
+      w = stage.clientWidth; h = stage.clientHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function make(){
+      dots = Array.from({ length: COUNT }, () => ({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.12, vy: (Math.random() - 0.5) * 0.12,
+        r: Math.random() * 1.2 + 0.5
+      }));
+    }
+    function draw(){
+      ctx.clearRect(0, 0, w, h);
+      for (let i = 0; i < dots.length; i++){
+        const p = dots[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+        for (let j = i + 1; j < dots.length; j++){
+          const q = dots[j];
+          const dx = p.x - q.x, dy = p.y - q.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 90){
+            ctx.strokeStyle = `rgba(69,216,242,${(1 - d / 90) * 0.22})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+          }
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,240,255,0.55)';
+        ctx.fill();
+      }
+      if (!reduceMotion) requestAnimationFrame(draw);
+    }
+    resize(); make(); draw();
+    window.addEventListener('resize', () => { resize(); make(); }, { passive: true });
+  })();
+
+  /* ---------- Subtle mouse-reactive parallax on the orbital system ---------- */
+  (function coreMouseParallax(){
+    if (isTouch || reduceMotion) return;
+    const stage = document.getElementById('aboutCoreStage');
+    const system = document.getElementById('aboutOrbitSystem');
+    const core = stage ? stage.querySelector('.about-ai-core') : null;
+    if (!stage || !system) return;
+
+    let targetX = 0, targetY = 0, curX = 0, curY = 0;
+    let active = false;
+
+    stage.addEventListener('mousemove', (e) => {
+      const r = stage.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      targetX = px * 14;   // max ~14px shift — kept subtle
+      targetY = py * 14;
+      if (core) core.style.setProperty('--coreBoost', String(1 - Math.min(1, Math.hypot(px, py) * 1.4)));
+      if (!active){ active = true; requestAnimationFrame(tick); }
+    }, { passive: true });
+
+    stage.addEventListener('mouseleave', () => {
+      targetX = 0; targetY = 0;
+      if (core) core.style.removeProperty('--coreBoost');
+    });
+
+    function tick(){
+      curX += (targetX - curX) * 0.12;
+      curY += (targetY - curY) * 0.12;
+      system.style.transform = `translate(${curX.toFixed(2)}px, ${curY.toFixed(2)}px)`;
+      if (Math.abs(targetX - curX) > 0.05 || Math.abs(targetY - curY) > 0.05){
+        requestAnimationFrame(tick);
+      } else {
+        active = false;
+      }
+    }
+  })();
+
+});
