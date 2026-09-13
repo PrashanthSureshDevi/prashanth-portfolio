@@ -16,7 +16,7 @@
 <link rel="apple-touch-icon" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 
 <style>
@@ -222,7 +222,7 @@
   </button>
 </nav>
 
-<!-- HERO (upgraded) -->
+<!-- HERO -->
 <header class="hero wrap" id="hero" tabindex="-1">
   <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
 
@@ -297,49 +297,95 @@
 
 <!-- ABOUT -->
 <section id="about">
-  <div class="about-holo-bg" aria-hidden="true">
-    <div class="about-holo-grid"></div>
-    <span class="about-holo-circle circle-1"></span>
-    <span class="about-holo-circle circle-2"></span>
-    <span class="about-holo-circle circle-3"></span>
+  <div class="abt-bg" aria-hidden="true">
+    <div class="abt-grid"></div>
   </div>
-  <div class="wrap">
-    <div class="about-grid-v2">
 
-      <div class="about-portrait-stage reveal">
-        <canvas id="aboutCanvas" class="about-canvas" aria-hidden="true"></canvas>
-        <div class="about-orbit orbit-1" aria-hidden="true"></div>
-        <div class="about-orbit orbit-2" aria-hidden="true"></div>
-        <div class="about-spark spark-a" aria-hidden="true"></div>
-        <div class="about-spark spark-b" aria-hidden="true"></div>
-        <div class="about-portrait-ring" aria-hidden="true"></div>
-        <div class="about-portrait-frame" id="aboutPortraitFrame">
-          <img src="about-photo.jpeg" alt="Portrait of Prashanth S" width="720" height="1280">
-          <div class="about-scan" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="abt-layout">
+
+      <!-- LEFT: identity + progression -->
+      <div class="abt-left reveal">
+
+        <div class="abt-portrait-stage">
+          <div class="abt-ring ring-1" aria-hidden="true"></div>
+          <div class="abt-ring ring-2" aria-hidden="true"></div>
+          <div class="abt-ring ring-3" aria-hidden="true"></div>
+          <span class="abt-particle p1" aria-hidden="true"></span>
+          <span class="abt-particle p2" aria-hidden="true"></span>
+          <span class="abt-particle p3" aria-hidden="true"></span>
+
+          <div class="abt-photo">
+            <img src="about-photo.jpeg" alt="Portrait of Prashanth S" width="720" height="720">
+            <div class="abt-scan" aria-hidden="true"></div>
+          </div>
+
+          <div class="abt-badge">
+            <span class="abt-badge-dot" aria-hidden="true"></span>STATUS: TRAINING
+          </div>
         </div>
-        <div class="about-hud-badge hud-top" aria-hidden="true">
-          <span class="hud-dot"></span>STATUS: TRAINING
+
+        <div class="abt-identity reveal">
+          <span class="abt-div" aria-hidden="true"></span>
+          <div class="abt-signature">Prashanth S</div>
+          <div class="abt-role">AI &amp; ML Student</div>
+          <span class="abt-div" aria-hidden="true"></span>
         </div>
-        <div class="about-hud-badge hud-bottom" aria-hidden="true">
-          FOCUS: LLM / RAG
+
+        <div class="abt-panel reveal">
+          <div class="abt-panel-col">
+            <svg class="abt-panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9.5 2A3.5 3.5 0 0 0 6 5.5v.6A3 3 0 0 0 4 9v1.3A3.2 3.2 0 0 0 2.5 13a3.2 3.2 0 0 0 2 3v.5A3.4 3.4 0 0 0 8 20a2 2 0 0 0 2-2V5.5A3.5 3.5 0 0 0 9.5 2Z"/><path d="M14.5 2A3.5 3.5 0 0 1 18 5.5v.6A3 3 0 0 1 20 9v1.3a3.2 3.2 0 0 1 1.5 2.7 3.2 3.2 0 0 1-2 3v.5A3.4 3.4 0 0 1 16 20a2 2 0 0 1-2-2V5.5A3.5 3.5 0 0 1 14.5 2Z"/></svg>
+            <div class="abt-panel-num">01</div>
+            <div class="abt-panel-title">Learning</div>
+            <div class="abt-panel-sub">AI &amp; ML</div>
+          </div>
+          <div class="abt-panel-col">
+            <svg class="abt-panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m8 6-6 6 6 6M16 6l6 6-6 6M13 4 11 20"/></svg>
+            <div class="abt-panel-num">02</div>
+            <div class="abt-panel-title">Building</div>
+            <div class="abt-panel-sub">Web + AI Apps</div>
+          </div>
+          <div class="abt-panel-col">
+            <svg class="abt-panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-5 3 3 5-7"/></svg>
+            <div class="abt-panel-num">03</div>
+            <div class="abt-panel-title">Growing</div>
+            <div class="abt-panel-sub">DSA + Problem Solving</div>
+          </div>
+        </div>
+
+        <ol class="abt-timeline reveal" aria-label="Learning progression">
+          <li class="abt-timeline-stage is-active"><span class="abt-timeline-dot"></span>Learn</li>
+          <li class="abt-timeline-stage"><span class="abt-timeline-dot"></span>Build</li>
+          <li class="abt-timeline-stage"><span class="abt-timeline-dot"></span>Experiment</li>
+          <li class="abt-timeline-stage"><span class="abt-timeline-dot"></span>Grow</li>
+        </ol>
+
+        <div class="abt-tagline reveal">
+          <div class="abt-tagline-text">
+            <span>Better Systems</span><span class="abt-tagline-dot" aria-hidden="true">•</span><span>Smarter Solutions</span><span class="abt-tagline-dot" aria-hidden="true">•</span><span>A Brighter Future</span>
+          </div>
+          <svg class="abt-wave" viewBox="0 0 140 28" aria-hidden="true">
+            <polyline points="0,14 14,14 20,5 26,23 32,5 38,23 44,14 58,14 64,5 70,23 76,14 140,14"/>
+          </svg>
         </div>
       </div>
 
-      <div class="about-copy">
+      <!-- RIGHT: copy -->
+      <div class="abt-right reveal">
         <span class="eyebrow">About me</span>
-        <h2 class="about-heading reveal" id="aboutHeading">Engineering intelligence, one system at a time.</h2>
+        <h2 class="abt-heading">me<span class="abt-dot">.</span></h2>
 
-        <div class="about-status reveal" data-magnetic>
-          <span class="status-dot" aria-hidden="true"></span>
-          <span>Currently learning AI &amp; ML</span>
+        <div class="abt-pill" data-magnetic>
+          <span class="abt-pill-dot" aria-hidden="true"></span>Currently Learning AI &amp; ML
         </div>
 
-        <p class="about-intro reveal">Hi, I'm Prashanth S. I'm an AI &amp; ML student focused on building my foundation in intelligent systems and modern AI technologies. I'm continuously learning and experimenting with Machine Learning, Deep Learning, NLP, LLMs, RAG and Generative AI while strengthening my programming, problem-solving and development skills.</p>
+        <p class="abt-intro">Hi, I'm Prashanth S. I'm an AI &amp; ML student focused on building my foundation in intelligent systems and modern AI technologies. I'm continuously learning and experimenting with Machine Learning, Deep Learning, NLP, LLMs, RAG and Generative AI while strengthening my programming, problem-solving and development skills.</p>
 
-        <div class="about-cards reveal">
-          <div class="glass-card">
-            <div class="gc-label">Card 01</div>
-            <h4>AI / ML</h4>
+        <div class="abt-cards">
+          <div class="abt-card card-cyan reveal">
+            <span class="abt-corner tl" aria-hidden="true"></span>
+            <span class="abt-corner br" aria-hidden="true"></span>
+            <h3>AI / ML</h3>
             <ul>
               <li>Machine Learning</li>
               <li>Deep Learning</li>
@@ -349,18 +395,20 @@
               <li>Generative AI</li>
             </ul>
           </div>
-          <div class="glass-card">
-            <div class="gc-label">Card 02</div>
-            <h4>Building</h4>
+          <div class="abt-card card-purple reveal">
+            <span class="abt-corner tl" aria-hidden="true"></span>
+            <span class="abt-corner br" aria-hidden="true"></span>
+            <h3>Building</h3>
             <ul>
               <li>Intelligent systems</li>
               <li>AI-powered applications</li>
               <li>Modern web experiences</li>
             </ul>
           </div>
-          <div class="glass-card">
-            <div class="gc-label">Card 03</div>
-            <h4>Growing</h4>
+          <div class="abt-card card-teal reveal">
+            <span class="abt-corner tl" aria-hidden="true"></span>
+            <span class="abt-corner br" aria-hidden="true"></span>
+            <h3>Growing</h3>
             <ul>
               <li>DSA &amp; Algorithms</li>
               <li>Problem solving</li>
@@ -370,7 +418,7 @@
           </div>
         </div>
 
-        <div class="about-chip-row reveal" aria-label="Currently exploring">
+        <div class="abt-chip-row reveal" aria-label="Currently exploring">
           <span class="skill-chip"><span class="chip-dot"></span>Machine Learning</span>
           <span class="skill-chip"><span class="chip-dot"></span>LLMs</span>
           <span class="skill-chip"><span class="chip-dot"></span>NLP</span>
@@ -383,45 +431,6 @@
       </div>
 
     </div>
-
-    <div class="tech-orbit-wrap reveal">
-  <p class="tech-orbit-caption">Technologies currently orbiting my workflow.</p>
-  <div class="tech-orbit" id="techOrbit" role="img" aria-label="AI and ML orbit diagram: Python, C, DSA, Web Dev, HTML, CSS, JavaScript and SQL orbiting a central AI/ML node">
-    <div class="tech-orbit-ring ring-outer" aria-hidden="true"></div>
-    <div class="tech-orbit-ring ring-mid" aria-hidden="true"></div>
-    <div class="tech-orbit-ring ring-inner" aria-hidden="true"></div>
-    <div class="tech-orbit-center"><span>AI / ML</span></div>
-
-    <span class="orbit-particle p1" aria-hidden="true"></span>
-    <span class="orbit-particle p2" aria-hidden="true"></span>
-    <span class="orbit-particle p3" aria-hidden="true"></span>
-
-    <div class="spoke" style="--angle:0deg;--radius:172px;--dur:24s;--clr:#45d8f2;">
-      <span class="spoke-node"><span class="node-dot"></span>Python</span>
-    </div>
-    <div class="spoke" style="--angle:45deg;--radius:150px;--dur:19s;--clr:#8b7cf0;">
-      <span class="spoke-node"><span class="node-dot"></span>C</span>
-    </div>
-    <div class="spoke" style="--angle:90deg;--radius:172px;--dur:27s;--clr:#f97fd1;">
-      <span class="spoke-node"><span class="node-dot"></span>DSA</span>
-    </div>
-    <div class="spoke" style="--angle:135deg;--radius:150px;--dur:21s;--clr:#34d399;">
-      <span class="spoke-node"><span class="node-dot"></span>Web Dev</span>
-    </div>
-    <div class="spoke" style="--angle:180deg;--radius:172px;--dur:25s;--clr:#fbbf24;">
-      <span class="spoke-node"><span class="node-dot"></span>HTML</span>
-    </div>
-    <div class="spoke" style="--angle:225deg;--radius:150px;--dur:18s;--clr:#f2705c;">
-      <span class="spoke-node"><span class="node-dot"></span>CSS</span>
-    </div>
-    <div class="spoke" style="--angle:270deg;--radius:172px;--dur:23s;--clr:#6fa8f2;">
-      <span class="spoke-node"><span class="node-dot"></span>JavaScript</span>
-    </div>
-    <div class="spoke" style="--angle:315deg;--radius:150px;--dur:20s;--clr:#45d8f2;">
-      <span class="spoke-node"><span class="node-dot"></span>SQL</span>
-    </div>
-  </div>
-</div>
   </div>
 </section>
 
