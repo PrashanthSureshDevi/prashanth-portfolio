@@ -637,36 +637,6 @@ body.no-custom-cursor #cursorTrail{display:none;}
   to{ transform:translate(-50%,-50%) rotate(360deg) translateX(155px) rotate(-360deg); }
 }
 
-/* ---- portrait orbit accent: two counter-rotating sparks, mirrors the hero portrait ---- */
-.abt-orbit{position:absolute;inset:-26px;pointer-events:none;z-index:2;}
-.abt-spark{
-  position:absolute;top:50%;left:50%;width:7px;height:7px;border-radius:50%;
-  background:var(--accent);box-shadow:0 0 10px var(--accent),0 0 22px var(--accent-2);
-}
-.abt-spark.spark-a{animation:abtOrbitSparkA 8s linear infinite;}
-.abt-spark.spark-b{
-  background:var(--abt-teal);box-shadow:0 0 10px var(--abt-teal),0 0 22px var(--accent);
-  animation:abtOrbitSparkB 11s linear infinite reverse;
-}
-@keyframes abtOrbitSparkA{
-  from{ transform:translate(-50%,-50%) rotate(0deg) translateX(168px) rotate(0deg); }
-  to{ transform:translate(-50%,-50%) rotate(360deg) translateX(168px) rotate(-360deg); }
-}
-@keyframes abtOrbitSparkB{
-  from{ transform:translate(-50%,-50%) rotate(0deg) translateX(150px) rotate(0deg); }
-  to{ transform:translate(-50%,-50%) rotate(360deg) translateX(150px) rotate(-360deg); }
-}
-@media (max-width:640px){
-  @keyframes abtOrbitSparkA{
-    from{ transform:translate(-50%,-50%) rotate(0deg) translateX(128px) rotate(0deg); }
-    to{ transform:translate(-50%,-50%) rotate(360deg) translateX(128px) rotate(-360deg); }
-  }
-  @keyframes abtOrbitSparkB{
-    from{ transform:translate(-50%,-50%) rotate(0deg) translateX(112px) rotate(0deg); }
-    to{ transform:translate(-50%,-50%) rotate(360deg) translateX(112px) rotate(-360deg); }
-  }
-}
-
 .abt-photo{
   position:absolute;inset:11%;border-radius:50%;overflow:hidden;
   border:1px solid var(--border-strong);
@@ -687,7 +657,7 @@ body.no-custom-cursor #cursorTrail{display:none;}
 @keyframes abtScan{ 0%,100%{top:10%;} 50%{top:88%;} }
 
 .abt-badge{
-  position:absolute;bottom:-4px;right:-6px;z-index:3;display:inline-flex;align-items:center;gap:.5rem;
+  position:absolute;bottom:-4px;right:-6px;z-index:5;display:inline-flex;align-items:center;gap:.5rem;
   background:rgba(9,12,16,.78);border:1px solid var(--border);border-radius:10px;
   padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;
   color:rgba(255,255,255,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
@@ -771,23 +741,8 @@ body.no-custom-cursor #cursorTrail{display:none;}
 @keyframes abtWaveFlow{ to{ stroke-dashoffset:-40; } }
 
 /* ---- RIGHT copy ---- */
-.abt-heading{font-size:clamp(34px,4.6vw,52px);font-weight:600;margin-bottom:8px;}
-.abt-heading::after{
-  content:"";display:block;width:56px;height:3px;margin-top:14px;margin-bottom:18px;border-radius:100px;
-  background:linear-gradient(90deg,var(--accent),var(--accent-2));
-  box-shadow:0 0 12px rgba(69,216,242,.5);
-}
+.abt-heading{font-size:clamp(34px,4.6vw,52px);font-weight:600;margin-bottom:22px;}
 .abt-dot{color:var(--accent);text-shadow:0 0 16px rgba(69,216,242,.65);}
-.abt-heading .ch{
-  display:inline-block;
-  opacity:0;
-  transform:translateY(16px);
-  transition:opacity .55s var(--ease), transform .55s var(--ease);
-}
-.abt-heading.letters-in .ch{
-  opacity:1;
-  transform:translateY(0);
-}
 .abt-pill{
   display:inline-flex;align-items:center;gap:.55rem;padding:.4rem .9rem;border-radius:999px;
   background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
@@ -834,7 +789,6 @@ body.no-custom-cursor #cursorTrail{display:none;}
   .abt-intro{margin-left:auto;margin-right:auto;}
   .abt-cards{grid-template-columns:1fr;}
   .abt-chip-row{justify-content:center;}
-  .abt-heading::after{margin-left:auto;margin-right:auto;}
 }
 @media (max-width:640px){
   .abt-portrait-stage{width:min(240px,76%);}
@@ -850,7 +804,7 @@ body.no-custom-cursor #cursorTrail{display:none;}
 @media (prefers-reduced-motion: reduce){
   .abt-grid,.abt-ring,.abt-particle,.abt-photo,.abt-scan,.abt-badge,.abt-badge-dot,
   .abt-timeline::after,.abt-timeline-stage.is-active .abt-timeline-dot,
-  .abt-wave polyline,.abt-pill-dot,.abt-spark{
+  .abt-wave polyline,.abt-pill-dot{
     animation:none !important;
   }
 }
@@ -866,4 +820,93 @@ body.no-custom-cursor #cursorTrail{display:none;}
   .timeline.is-active .timeline-item{
     animation:none !important;opacity:1;transform:none;
   }
+}
+
+/* ======================================================
+   ORBITING SKILL RING — About portrait
+   A ring of the core toolkit (Python / JS / HTML / CSS / Git /
+   GitHub / VS Code) orbiting the portrait, staying upright via
+   a counter-rotation so the labels never spin with the ring.
+   Uses --i (index) and --n (total count) set inline per item to
+   evenly space them, plus a phase-shifted animation-delay so a
+   single shared keyframe animates the whole ring together.
+   ====================================================== */
+
+.orbit-skills{
+  --radius:178px;
+  --dur:30s;
+  position:absolute;
+  inset:0;
+  z-index:4;
+  pointer-events:none;
+}
+.orbit-skill{
+  position:absolute;
+  top:50%;left:50%;
+  width:0;height:0;
+  animation:orbitSkillSpin var(--dur) linear infinite;
+  animation-delay:calc(-1 * var(--dur) / var(--n,7) * var(--i,0));
+}
+.orbit-skill-arm{
+  position:absolute;
+  top:0;left:0;
+  transform:translateX(var(--radius)) rotate(0deg);
+  animation:orbitSkillSpinReverse var(--dur) linear infinite;
+  animation-delay:calc(-1 * var(--dur) / var(--n,7) * var(--i,0));
+}
+@keyframes orbitSkillSpin{
+  from{ transform:rotate(0deg); }
+  to{ transform:rotate(360deg); }
+}
+@keyframes orbitSkillSpinReverse{
+  from{ transform:translateX(var(--radius)) rotate(0deg); }
+  to{ transform:translateX(var(--radius)) rotate(-360deg); }
+}
+.orbit-skill-chip{
+  position:absolute;
+  top:0;left:0;
+  transform:translate(-50%,-50%);
+  display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+  padding:8px 15px;border-radius:100px;
+  background:rgba(9,12,16,.85);
+  border:1px solid var(--border-strong);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:500;
+  color:var(--text-dim);
+  box-shadow:0 12px 26px -14px rgba(0,0,0,.65);
+  pointer-events:auto;
+  transition:border-color .25s,color .25s,transform .25s var(--ease),box-shadow .25s;
+}
+.orbit-skill-chip .osc-dot{
+  width:5px;height:5px;border-radius:50%;flex:none;
+  background:var(--skill-color,var(--accent));
+  box-shadow:0 0 7px var(--skill-color,var(--accent));
+}
+.orbit-skill-chip:hover{
+  border-color:var(--skill-color,var(--accent));
+  color:var(--text);
+  transform:translate(-50%,-50%) scale(1.1);
+  box-shadow:0 16px 32px -14px var(--skill-color,var(--accent));
+}
+/* pause the whole ring so a hovered label stays put and readable */
+.orbit-skill:has(.orbit-skill-chip:hover),
+.orbit-skill:has(.orbit-skill-chip:hover) .orbit-skill-arm{
+  animation-play-state:paused;
+}
+
+@media (max-width:980px){
+  .orbit-skills{ --radius:158px; }
+}
+@media (max-width:640px){
+  .orbit-skills{ --radius:126px; }
+  .orbit-skill-chip{ padding:6px 12px; font-size:11px; gap:6px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .orbit-skill,.orbit-skill-arm{
+    animation:none !important;
+    /* fall back to a static, evenly-spaced ring so nothing overlaps */
+  }
+  .orbit-skill{ transform:rotate(calc(360deg / var(--n,7) * var(--i,0))) !important; }
+  .orbit-skill-arm{ transform:translateX(var(--radius)) rotate(calc(-360deg / var(--n,7) * var(--i,0))) !important; }
 }
