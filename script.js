@@ -515,18 +515,26 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const words = heading.textContent.split(' ');
+    // keep the accent dot (".abt-dot") as its own element so it keeps its
+    // glow/color styling — only the plain text gets split into letters.
+    const dot = heading.querySelector('.abt-dot');
+    const dotText = dot ? dot.textContent : '';
+    const baseText = dotText ? heading.textContent.slice(0, -dotText.length) : heading.textContent;
+
     heading.textContent = '';
-    words.forEach((word, wi) => {
-      word.split('').forEach((ch, ci) => {
-        const span = document.createElement('span');
-        span.className = 'ch';
-        span.textContent = ch;
-        span.style.transitionDelay = ((wi * 4 + ci) * 16) + 'ms';
-        heading.appendChild(span);
-      });
-      if (wi < words.length - 1) heading.appendChild(document.createTextNode(' '));
+    baseText.split('').forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'ch';
+      span.textContent = ch;
+      span.style.transitionDelay = (i * 16) + 'ms';
+      heading.appendChild(span);
     });
+
+    if (dot){
+      dot.classList.add('ch');
+      dot.style.transitionDelay = (baseText.length * 16) + 'ms';
+      heading.appendChild(dot);
+    }
 
     const hio = new IntersectionObserver((entries) => {
       entries.forEach(e => {
