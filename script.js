@@ -820,3 +820,245 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
 });
+
+/* =====================================================================
+   ADVANCED ANIMATIONS UPGRADE — v2
+   Purely additive. Runs after everything above; touches no existing
+   function or selector, only adds new behavior scoped to new hooks.
+   ===================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  const reduceMotionV2 = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouchV2 = matchMedia('(hover: none), (pointer: coarse)').matches;
+
+  /* ---------- 1. Hero headline scramble-decode reveal ---------- */
+  (function scrambleHeadline(){
+    const el = document.querySelector('.hero-headline');
+    if (!el || reduceMotionV2) return;
+    const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ01#$%&*';
+    // walk text nodes only, wrap each visible character, leave the
+    // .accent-line span structure intact
+    function wrapNode(node){
+      const text = node.textContent;
+      if (!text.trim()) return;
+      const frag = document.createDocumentFragment();
+      text.split('').forEach(ch => {
+        const span = document.createElement('span');
+        span.className = 'scramble-char';
+        span.textContent = ch;
+        span.dataset.final = ch;
+        frag.appendChild(span);
+      });
+      node.parentNode.replaceChild(frag, node);
+    }
+    Array.from(el.childNodes).forEach(node => {
+      if (node.nodeType === 3) wrapNode(node);
+      else if (node.nodeType === 1) {
+        Array.from(node.childNodes).forEach(inner => {
+          if (inner.nodeType === 3) wrapNode(inner);
+        });
+      }
+    });
+    const chars = el.querySelectorAll('.scramble-char');
+    chars.forEach((span, i) => {
+      const final = span.dataset.final;
+      if (final === ' ') return;
+      let frame = 0;
+      const totalFrames = 10 + Math.floor(Math.random() * 6);
+      const startDelay = 300 + i * 34;
+      setTimeout(() => {
+        const iv = setInterval(() => {
+          frame++;
+          if (frame >= totalFrames) {
+            span.textContent = final;
+            clearInterval(iv);
+          } else {
+            span.textContent = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          }
+        }, 28);
+      }, startDelay);
+    });
+  })();
+
+  /* ---------- 2. Boot-sequence intro overlay (layered inside #pageIntro) ---------- */
+  (function bootIntro(){
+    const intro = document.getElementById('pageIntro');
+    if (!intro) return;
+    const boot = document.createElement('div');
+    boot.className = 'intro-boot';
+    const label = (CONFIG && CONFIG.name ? CONFIG.name : 'PORTFOLIO').toUpperCase() + ' // BOOTING';
+    const letterSpans = label.split('').map((ch, i) =>
+      `<span style="animation-delay:${(i * 0.018).toFixed(3)}s">${ch === ' ' ? '&nbsp;' : ch}</span>`
+    ).join('');
+    boot.innerHTML = `
+      <div class="intro-boot-logo">${letterSpans}</div>
+      <div class="intro-boot-bar"><div class="intro-boot-bar-fill"></div></div>
+      <div class="intro-boot-pct" id="introBootPct">0%</div>
+    `;
+    intro.appendChild(boot);
+    if (reduceMotionV2) return;
+    const pctEl = boot.querySelector('#introBootPct');
+    let pct = 0;
+    const iv = setInterval(() => {
+      pct = Math.min(100, pct + Math.ceil(Math.random() * 18));
+      pctEl.textContent = pct + '%';
+      if (pct >= 100) clearInterval(iv);
+    }, 90);
+  })();
+
+  /* ---------- 3. Scroll-linked hero parallax ---------- */
+  (function heroParallax(){
+    if (reduceMotionV2) return;
+    const hero = document.getElementById('hero');
+    if (!hero) return;
+    let ticking = false;
+    function update(){
+      const sy = window.scrollY;
+      const py = Math.min(sy * 0.18, 60);
+      hero.style.setProperty('--py', py + 'px');
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking){ requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+    update();
+  })();
+
+  /* ---------- 4. Section heading split-reveal (clip-path style wipe) ---------- */
+  (function splitReveal(){
+    const heads = document.querySelectorAll('.section-head h2, .about-heading, .contact-inner h2');
+    if (!heads.length) return;
+    heads.forEach(h => {
+      const words = h.textContent.trim().split(/\s+/);
+      h.textContent = '';
+      words.forEach((word, i) => {
+        const wrap = document.createElement('span');
+        wrap.className = 'split-reveal';
+        const inner = document.createElement('span');
+        inner.className = 'split-word';
+        inner.style.setProperty('--wi', i);
+        inner.textContent = word;
+        wrap.appendChild(inner);
+        h.appendChild(wrap);
+        if (i < words.length - 1) h.appendChild(document.createTextNode(' '));
+      });
+    });
+    if (reduceMotionV2){
+      document.querySelectorAll('.split-reveal').forEach(s => s.classList.add('is-split-visible'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting){
+          e.target.closest('h2') && e.target.closest('h2').querySelectorAll('.split-reveal').forEach(s => s.classList.add('is-split-visible'));
+        }
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('.split-reveal').forEach(s => io.observe(s));
+  })();
+
+  /* ---------- 5. Mouse-tracked spotlight glare on cards/panels ---------- */
+  (function spotlightGlare(){
+    if (isTouchV2 || reduceMotionV2) return;
+    const targets = document.querySelectorAll('.glass-card, .timeline-card, .resume-card, .contact-form, .coming-soon, .terminal');
+    targets.forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const gx = ((e.clientX - r.left) / r.width) * 100;
+        const gy = ((e.clientY - r.top) / r.height) * 100;
+        el.style.setProperty('--gx', gx + '%');
+        el.style.setProperty('--gy', gy + '%');
+        el.classList.add('is-glaring');
+      });
+      el.addEventListener('mouseleave', () => el.classList.remove('is-glaring'));
+    });
+  })();
+
+  /* ---------- 6. Goo cursor trail (metaball blobs via SVG filter) ---------- */
+  (function gooCursor(){
+    if (isTouchV2 || reduceMotionV2) return;
+    if (!document.getElementById('gooFilter')){
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(svgNS, 'svg');
+      svg.setAttribute('width', '0');
+      svg.setAttribute('height', '0');
+      svg.style.position = 'absolute';
+      svg.innerHTML = `<defs><filter id="gooFilter"><feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo"/></filter></defs>`;
+      document.body.appendChild(svg);
+    }
+    const layer = document.createElement('div');
+    layer.id = 'cursorGoo';
+    document.body.appendChild(layer);
+
+    const hues = [190, 260];
+    const blobCount = 6;
+    const blobs = [];
+    for (let i = 0; i < blobCount; i++){
+      const b = document.createElement('div');
+      b.className = 'goo-blob';
+      layer.appendChild(b);
+      blobs.push({ el: b, x: innerWidth/2, y: innerHeight/2 });
+    }
+    let mx = innerWidth/2, my = innerHeight/2;
+    window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
+
+    function loop(){
+      let px = mx, py = my;
+      blobs.forEach((b, i) => {
+        b.x += (px - b.x) * 0.32;
+        b.y += (py - b.y) * 0.32;
+        const hue = hues[i % hues.length];
+        const scale = 1 - i * 0.09;
+        b.el.style.background = `hsl(${hue},90%,62%)`;
+        b.el.style.transform = `translate(${b.x - 8}px, ${b.y - 8}px) scale(${scale})`;
+        px = b.x; py = b.y;
+      });
+      requestAnimationFrame(loop);
+    }
+    loop();
+  })();
+
+  /* ---------- 7. Click ripple burst (colorful particles at click point) ---------- */
+  (function clickBurst(){
+    if (reduceMotionV2) return;
+    document.addEventListener('pointerdown', (e) => {
+      const count = 6;
+      for (let i = 0; i < count; i++){
+        const p = document.createElement('span');
+        p.className = 'click-burst';
+        const angle = (Math.PI * 2 * i) / count;
+        const dist = 26 + Math.random() * 18;
+        const hue = 180 + Math.random() * 120;
+        p.style.left = e.clientX + 'px';
+        p.style.top = e.clientY + 'px';
+        p.style.background = `hsl(${hue},95%,65%)`;
+        p.style.boxShadow = `0 0 8px hsl(${hue},95%,65%)`;
+        p.style.setProperty('transform', `translate(-50%,-50%)`);
+        document.body.appendChild(p);
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist;
+        p.animate([
+          { transform: 'translate(-50%,-50%) translate(0,0) scale(0)', opacity: 1 },
+          { transform: `translate(-50%,-50%) translate(${dx}px,${dy}px) scale(1)`, opacity: 0 }
+        ], { duration: 620, easing: 'cubic-bezier(.2,.8,.3,1)' });
+        setTimeout(() => p.remove(), 650);
+      }
+    }, { passive: true });
+  })();
+
+  /* ---------- 8. Button press ripple ---------- */
+  (function buttonRipple(){
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('pointerdown', (e) => {
+        const r = btn.getBoundingClientRect();
+        const size = Math.max(r.width, r.height) * 1.4;
+        const ripple = document.createElement('span');
+        ripple.className = 'btn-ripple';
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - r.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - r.top - size / 2) + 'px';
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 650);
+      });
+    });
+  })();
+});
