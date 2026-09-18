@@ -649,6 +649,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!nodes.length) return;
 
     function place(){
+      // Below 480px wide, the CSS switches the orbit into a static, wrapped
+      // layout (no absolute positioning), so skip the radial math entirely —
+      // writing --nx/--ny there is wasted work and CSS ignores it anyway.
+      if (window.matchMedia('(max-width: 480px)').matches) return;
+
       const w = system.clientWidth;
       if (!w) return;
       // radius shrinks a touch on very small stages so nodes stay clear of the core
