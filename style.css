@@ -25,6 +25,8 @@ body{
   overflow-x:hidden;
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
 }
 h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em;}
 ::selection{background:var(--accent);color:#05070a;}
@@ -113,18 +115,18 @@ body:not(.no-custom-cursor), body:not(.no-custom-cursor) a, body:not(.no-custom-
 /* mobile nav toggle + panel */
 .nav-toggle{
   display:none;background:none;border:1px solid var(--border-strong);border-radius:50%;
-  color:var(--text);width:38px;height:38px;position:relative;flex:none;cursor:pointer;
+  color:var(--text);width:44px;height:44px;position:relative;flex:none;cursor:pointer;
 }
 .nav-toggle span,.nav-toggle::before,.nav-toggle::after{
-  content:"";position:absolute;left:9px;right:9px;height:1.5px;background:var(--text);
+  content:"";position:absolute;left:12px;right:12px;height:1.5px;background:var(--text);
   transition:transform .25s var(--ease),opacity .2s var(--ease),top .25s var(--ease);
 }
-.nav-toggle span{top:18px;}
-.nav-toggle::before{top:13px;}
-.nav-toggle::after{top:23px;}
+.nav-toggle span{top:21px;}
+.nav-toggle::before{top:16px;}
+.nav-toggle::after{top:26px;}
 .nav-toggle[aria-expanded="true"] span{opacity:0;}
-.nav-toggle[aria-expanded="true"]::before{top:18px;transform:rotate(45deg);}
-.nav-toggle[aria-expanded="true"]::after{top:18px;transform:rotate(-45deg);}
+.nav-toggle[aria-expanded="true"]::before{top:21px;transform:rotate(45deg);}
+.nav-toggle[aria-expanded="true"]::after{top:21px;transform:rotate(-45deg);}
 
 @media (max-width:980px){
   .nav-toggle{display:block;}
@@ -136,6 +138,7 @@ body:not(.no-custom-cursor), body:not(.no-custom-cursor) a, body:not(.no-custom-
     opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-8px);
     transition:opacity .25s var(--ease),transform .25s var(--ease),visibility .25s;
     box-shadow:0 20px 50px -20px rgba(0,0,0,0.6);
+    max-height:calc(100vh - 100px);overflow-y:auto;
   }
   .nav-links.is-open{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
   .nav-links li{width:100%;}
@@ -463,7 +466,7 @@ body:not(.no-custom-cursor), body:not(.no-custom-cursor) a, body:not(.no-custom-
 .contact-inner{text-align:left;max-width:520px;}
 .contact-inner h2{font-size:clamp(32px,5vw,54px);font-weight:600;line-height:1.08;}
 .contact-inner p{margin-top:20px;color:var(--text-mute);font-size:16px;max-width:50ch;}
-.contact-inner > a{display:inline-block;margin-top:14px;color:var(--accent);font-size:15px;border-bottom:1px solid transparent;transition:border-color .25s;}
+.contact-inner > a{display:inline-block;margin-top:14px;color:var(--accent);font-size:15px;border-bottom:1px solid transparent;transition:border-color .25s;word-break:break-word;}
 .contact-inner > a:hover{border-color:var(--accent);}
 .contact-actions{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;}
 .contact-link{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border:1px solid var(--border-strong);border-radius:100px;font-size:13.5px;transition:all .25s var(--ease);}
@@ -549,7 +552,7 @@ footer{padding:40px 0;}
   .about-copy{text-align:center;}
   .about-heading{max-width:none;margin-left:auto;margin-right:auto;}
   .about-intro{margin-left:auto;margin-right:auto;}
-  .about-cards{grid-template-columns:1fr;}
+  .about-cards{grid-template-columns:repeat(2,1fr);}
   .about-chip-row{justify-content:center;}
   .contact-grid{grid-template-columns:1fr;gap:40px;}
   .contact-inner{max-width:none;}
@@ -560,6 +563,7 @@ footer{padding:40px 0;}
   .hero{padding-top:110px;}
   .hero-meta{flex-wrap:wrap;gap:20px;}
   .about-stats{grid-template-columns:1fr;}
+  .about-cards{grid-template-columns:1fr;}
   .about-portrait-stage{max-width:280px;--orbit-r:120px;}
   .cs-visual{gap:14px;}
   .cs-bracket{font-size:34px;}
@@ -571,7 +575,13 @@ footer{padding:40px 0;}
   .resume-actions{width:100%;}
   .resume-actions .btn{flex:1;justify-content:center;}
   .contact-form{padding:24px;}
+  /* 16px prevents iOS Safari from auto-zooming the page on input focus */
+  .form-field input,.form-field textarea{font-size:16px;}
   .social-bar-inner{flex-direction:column;align-items:flex-start;}
+}
+@media (max-width:400px){
+  .hero-actions{flex-direction:column;align-items:stretch;}
+  .hero-actions .btn{justify-content:center;}
 }
 @media (prefers-reduced-motion: reduce){
   .about-orbit,.about-spark,.about-portrait-ring,.cs-bracket,.cs-progress-fill,.timeline-item.is-upcoming .timeline-node{
@@ -958,6 +968,7 @@ body.no-custom-cursor #cursorTrail{display:none;}
 }
 
 /* ---- skill nodes (positioned via JS custom props --nx / --ny) ---- */
+.about-skill-nodes{ display:contents; }
 .about-skill-node{
   position:absolute;
   top:50%; left:50%;
@@ -1082,6 +1093,57 @@ body.no-custom-cursor #cursorTrail{display:none;}
 }
 @media (max-width:380px){
   .about-orbit-system{ width:min(280px, 98vw); }
+}
+
+/* Below this width the radial math gets too tight for 8 labeled chips —
+   drop the orbit entirely and lay the skills out as a simple wrapped row
+   under a small static core. Prevents chip overlap/collision on phones. */
+@media (max-width:480px){
+  .about-orbit-ring,
+  .about-orbit-dot,
+  .about-neural-lines{ display:none; }
+
+  .about-ai-core-stage{ padding:32px 16px 28px; }
+
+  .about-orbit-system{
+    width:100%;
+    max-width:360px;
+    aspect-ratio:auto;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .about-ai-core{
+    position:static;
+    width:104px;
+  }
+
+  .about-skill-nodes{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+  }
+
+  .about-skill-node{
+    position:static;
+    transform:none !important;
+    animation:none !important;
+    opacity:1;
+  }
+  .about-skill-node::after{ display:none; }
+
+  .about-system-label{
+    position:static;
+    transform:none;
+    margin-top:4px;
+  }
+}
+
+/* ---- responsive: about identity + orbit core on very small screens ---- */
+@media (max-width:400px){
+  .about-identity{ padding:30px 18px; }
+  .about-identity-name{ font-size:clamp(24px,8vw,32px); }
 }
 
 /* ---- reduced motion: keep it attractive but mostly static ---- */
