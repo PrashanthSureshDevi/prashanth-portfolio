@@ -649,16 +649,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!nodes.length) return;
 
     function place(){
+      // Below 360px wide, the CSS switches the orbit into a static, wrapped
+      // layout (no absolute positioning), so skip the radial math entirely —
+      // writing --nx/--ny there is wasted work and CSS ignores it anyway.
+      if (window.matchMedia('(max-width: 360px)').matches) return;
+
       const w = system.clientWidth;
       if (!w) return;
       // radius shrinks a touch on very small stages so nodes stay clear of the core
-      const radiusPct = w < 340 ? 0.40 : w < 480 ? 0.42 : 0.445;
+      const radiusPct = w < 320 ? 0.37 : w < 400 ? 0.40 : w < 480 ? 0.415 : w < 640 ? 0.43 : 0.445;
       const r = w * radiusPct;
       const count = nodes.length;
+      // On narrow phones, alternate every other node onto a slightly smaller
+      // radius. Angular spacing alone isn't enough room for 8 labeled chips
+      // at this scale — the stagger pushes neighbours apart diagonally
+      // instead of just around the ring, so labels stop overlapping.
+      const staggerAmt = w < 640 ? 0.8 : 1;
       nodes.forEach((node, i) => {
         const angle = (Math.PI * 2 * i) / count - Math.PI / 2; // start at top, clockwise
-        const nx = Math.cos(angle) * r;
-        const ny = Math.sin(angle) * r;
+        const rr = r * (i % 2 === 0 ? 1 : staggerAmt);
+        const nx = Math.cos(angle) * rr;
+        const ny = Math.sin(angle) * rr;
         node.style.setProperty('--nx', nx.toFixed(1) + 'px');
         node.style.setProperty('--ny', ny.toFixed(1) + 'px');
         node.style.setProperty('--i', i);
