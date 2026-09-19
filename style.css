@@ -1106,7 +1106,12 @@ body.no-custom-cursor #cursorTrail{display:none;}
   .about-ai-core-stage{ padding:44px 8px 32px; }
   .about-orbit-system{ width:min(340px, 94vw); }
   .about-ai-core{ width:25%; }
-  .about-skill-node{ padding:7px 11px; font-size:11px; min-width:0; letter-spacing:.005em; }
+  .about-skill-node{
+    padding:7px 10px; font-size:10.5px; min-width:0; letter-spacing:0;
+  }
+  .about-skill-node .node-name{
+    max-width:84px; overflow:hidden; text-overflow:ellipsis; display:block;
+  }
   .about-skill-node .node-desc{ display:none; } /* avoid overflow/clipping on small screens */
 }
 
@@ -1116,10 +1121,11 @@ body.no-custom-cursor #cursorTrail{display:none;}
   .about-ai-core-stage{ padding:36px 6px 28px; }
   .about-orbit-system{ width:min(300px, 96vw); }
   .about-ai-core{ width:23%; }
-  .about-skill-node{ padding:6px 9px; font-size:10.5px; }
+  .about-skill-node{ padding:6px 8px; font-size:10px; }
+  .about-skill-node .node-name{ max-width:66px; }
 }
 
-/* Below this width even a staggered radial layout gets too tight for 8
+/* Below this width even a truncated radial layout gets too tight for 8
    labeled chips — drop the orbit and lay the skills out as a simple
    wrapped row under a small static core. Prevents chip overlap on the
    smallest phones. */
