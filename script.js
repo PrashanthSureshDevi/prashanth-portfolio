@@ -656,20 +656,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const w = system.clientWidth;
       if (!w) return;
-      // radius shrinks a touch on very small stages so nodes stay clear of the core
-      const radiusPct = w < 320 ? 0.37 : w < 400 ? 0.40 : w < 480 ? 0.415 : w < 640 ? 0.43 : 0.445;
+      // radius shrinks a touch on very small stages so nodes stay clear of the core.
+      // Every node uses the SAME radius so they land on a true circle — overlap on
+      // small screens is handled by capping chip width in CSS instead, not by
+      // moving alternating nodes onto a second radius (that made the ring look
+      // like a star/zigzag instead of a circle on mobile).
+      const radiusPct = w < 320 ? 0.40 : w < 400 ? 0.415 : w < 480 ? 0.43 : w < 640 ? 0.435 : 0.445;
       const r = w * radiusPct;
       const count = nodes.length;
-      // On narrow phones, alternate every other node onto a slightly smaller
-      // radius. Angular spacing alone isn't enough room for 8 labeled chips
-      // at this scale — the stagger pushes neighbours apart diagonally
-      // instead of just around the ring, so labels stop overlapping.
-      const staggerAmt = w < 640 ? 0.8 : 1;
       nodes.forEach((node, i) => {
         const angle = (Math.PI * 2 * i) / count - Math.PI / 2; // start at top, clockwise
-        const rr = r * (i % 2 === 0 ? 1 : staggerAmt);
-        const nx = Math.cos(angle) * rr;
-        const ny = Math.sin(angle) * rr;
+        const nx = Math.cos(angle) * r;
+        const ny = Math.sin(angle) * r;
         node.style.setProperty('--nx', nx.toFixed(1) + 'px');
         node.style.setProperty('--ny', ny.toFixed(1) + 'px');
         node.style.setProperty('--i', i);
