@@ -25,6 +25,8 @@ body{
   overflow-x:hidden;
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
 }
 h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em;}
 ::selection{background:var(--accent);color:#05070a;}
@@ -113,18 +115,18 @@ body:not(.no-custom-cursor), body:not(.no-custom-cursor) a, body:not(.no-custom-
 /* mobile nav toggle + panel */
 .nav-toggle{
   display:none;background:none;border:1px solid var(--border-strong);border-radius:50%;
-  color:var(--text);width:38px;height:38px;position:relative;flex:none;cursor:pointer;
+  color:var(--text);width:44px;height:44px;position:relative;flex:none;cursor:pointer;
 }
 .nav-toggle span,.nav-toggle::before,.nav-toggle::after{
-  content:"";position:absolute;left:9px;right:9px;height:1.5px;background:var(--text);
+  content:"";position:absolute;left:12px;right:12px;height:1.5px;background:var(--text);
   transition:transform .25s var(--ease),opacity .2s var(--ease),top .25s var(--ease);
 }
-.nav-toggle span{top:18px;}
-.nav-toggle::before{top:13px;}
-.nav-toggle::after{top:23px;}
+.nav-toggle span{top:21px;}
+.nav-toggle::before{top:16px;}
+.nav-toggle::after{top:26px;}
 .nav-toggle[aria-expanded="true"] span{opacity:0;}
-.nav-toggle[aria-expanded="true"]::before{top:18px;transform:rotate(45deg);}
-.nav-toggle[aria-expanded="true"]::after{top:18px;transform:rotate(-45deg);}
+.nav-toggle[aria-expanded="true"]::before{top:21px;transform:rotate(45deg);}
+.nav-toggle[aria-expanded="true"]::after{top:21px;transform:rotate(-45deg);}
 
 @media (max-width:980px){
   .nav-toggle{display:block;}
@@ -136,6 +138,7 @@ body:not(.no-custom-cursor), body:not(.no-custom-cursor) a, body:not(.no-custom-
     opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-8px);
     transition:opacity .25s var(--ease),transform .25s var(--ease),visibility .25s;
     box-shadow:0 20px 50px -20px rgba(0,0,0,0.6);
+    max-height:calc(100vh - 100px);overflow-y:auto;
   }
   .nav-links.is-open{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
   .nav-links li{width:100%;}
@@ -463,7 +466,7 @@ body:not(.no-custom-cursor), body:not(.no-custom-cursor) a, body:not(.no-custom-
 .contact-inner{text-align:left;max-width:520px;}
 .contact-inner h2{font-size:clamp(32px,5vw,54px);font-weight:600;line-height:1.08;}
 .contact-inner p{margin-top:20px;color:var(--text-mute);font-size:16px;max-width:50ch;}
-.contact-inner > a{display:inline-block;margin-top:14px;color:var(--accent);font-size:15px;border-bottom:1px solid transparent;transition:border-color .25s;}
+.contact-inner > a{display:inline-block;margin-top:14px;color:var(--accent);font-size:15px;border-bottom:1px solid transparent;transition:border-color .25s;word-break:break-word;}
 .contact-inner > a:hover{border-color:var(--accent);}
 .contact-actions{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;}
 .contact-link{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border:1px solid var(--border-strong);border-radius:100px;font-size:13.5px;transition:all .25s var(--ease);}
@@ -543,13 +546,13 @@ footer{padding:40px 0;}
 /* ============ RESPONSIVE ============ */
 @media (max-width:980px){
   .hero-grid{grid-template-columns:1fr;}
-  .portrait-stage{order:-1;margin-bottom:20px;}
-  .portrait-card{width:min(300px,70%);}
+  .portrait-stage{order:-1;margin:0 auto 20px;width:100%;max-width:360px;}
+  .portrait-card{width:min(300px,78%);}
   .about-grid-v2{grid-template-columns:1fr;gap:44px;}
   .about-copy{text-align:center;}
   .about-heading{max-width:none;margin-left:auto;margin-right:auto;}
   .about-intro{margin-left:auto;margin-right:auto;}
-  .about-cards{grid-template-columns:1fr;}
+  .about-cards{grid-template-columns:repeat(2,1fr);}
   .about-chip-row{justify-content:center;}
   .contact-grid{grid-template-columns:1fr;gap:40px;}
   .contact-inner{max-width:none;}
@@ -559,7 +562,13 @@ footer{padding:40px 0;}
   .wrap{padding:0 20px;}
   .hero{padding-top:110px;}
   .hero-meta{flex-wrap:wrap;gap:20px;}
+  .portrait-stage{max-width:300px;}
+  .portrait-card{width:min(280px,80%);}
+  .portrait-badge{font-size:10.5px;padding:8px 11px;}
+  .portrait-badge.name{left:-14px;}
+  .portrait-badge.role{right:-12px;}
   .about-stats{grid-template-columns:1fr;}
+  .about-cards{grid-template-columns:1fr;}
   .about-portrait-stage{max-width:280px;--orbit-r:120px;}
   .cs-visual{gap:14px;}
   .cs-bracket{font-size:34px;}
@@ -571,7 +580,17 @@ footer{padding:40px 0;}
   .resume-actions{width:100%;}
   .resume-actions .btn{flex:1;justify-content:center;}
   .contact-form{padding:24px;}
+  /* 16px prevents iOS Safari from auto-zooming the page on input focus */
+  .form-field input,.form-field textarea{font-size:16px;}
   .social-bar-inner{flex-direction:column;align-items:flex-start;}
+}
+@media (max-width:400px){
+  .hero-actions{flex-direction:column;align-items:stretch;}
+  .hero-actions .btn{justify-content:center;}
+  .portrait-stage{max-width:260px;}
+  .portrait-card{width:min(240px,84%);}
+  .portrait-badge.name{left:-6px;top:14px;}
+  .portrait-badge.role{right:-4px;bottom:18px;}
 }
 @media (prefers-reduced-motion: reduce){
   .about-orbit,.about-spark,.about-portrait-ring,.cs-bracket,.cs-progress-fill,.timeline-item.is-upcoming .timeline-node{
@@ -641,7 +660,12 @@ body.no-custom-cursor #cursorTrail{display:none;}
 }
 
 /* ---- Hero portrait: orbiting sparks + stronger ring glow ---- */
-#hero .portrait-orbit{position:absolute;inset:-50px;pointer-events:none;z-index:0;}
+/* radii are driven by CSS custom properties so every breakpoint can tune
+   them to the actual card size instead of the sparks flying off a small
+   mobile card (previously a hard-coded 200px/230px at every width) */
+#hero .portrait-stage{ --spark-r: 200px; --spark-r2: 230px; }
+#hero .portrait-orbit{position:absolute;inset:-50px;pointer-events:none;z-index:0;
+  display:flex;align-items:center;justify-content:center;}
 #hero .portrait-spark{
   position:absolute;top:50%;left:50%;width:7px;height:7px;border-radius:50%;
   background:var(--hero-accent);box-shadow:0 0 10px var(--hero-accent),0 0 22px var(--hero-accent-2);
@@ -652,12 +676,12 @@ body.no-custom-cursor #cursorTrail{display:none;}
   animation:heroOrbitB 10s linear infinite reverse;
 }
 @keyframes heroOrbitA{
-  from{transform:translate(-50%,-50%) rotate(0deg) translateX(200px) rotate(0deg);}
-  to{transform:translate(-50%,-50%) rotate(360deg) translateX(200px) rotate(-360deg);}
+  from{transform:translate(-50%,-50%) rotate(0deg) translateX(var(--spark-r,200px)) rotate(0deg);}
+  to{transform:translate(-50%,-50%) rotate(360deg) translateX(var(--spark-r,200px)) rotate(-360deg);}
 }
 @keyframes heroOrbitB{
-  from{transform:translate(-50%,-50%) rotate(0deg) translateX(230px) rotate(0deg);}
-  to{transform:translate(-50%,-50%) rotate(360deg) translateX(230px) rotate(-360deg);}
+  from{transform:translate(-50%,-50%) rotate(0deg) translateX(var(--spark-r2,230px)) rotate(0deg);}
+  to{transform:translate(-50%,-50%) rotate(360deg) translateX(var(--spark-r2,230px)) rotate(-360deg);}
 }
 @keyframes ringGlowPulse{
   0%,100%{filter:drop-shadow(0 0 6px rgba(34,211,238,.4));}
@@ -666,15 +690,19 @@ body.no-custom-cursor #cursorTrail{display:none;}
 #hero .portrait-stage .portrait-ring{animation:heroSpin 10s linear infinite, ringGlowPulse 3.2s ease-in-out infinite;}
 .about-portrait-ring{animation:orbitSpin 10s linear infinite, ringGlowPulse 3.2s ease-in-out infinite;}
 
+/* spark orbit radius scaled to match the portrait card at each tier
+   (card is min(340px,86%) desktop → min(300px,70%) ≤980 → ~78vw ≤640 → ~72vw ≤400) */
+@media (max-width:980px){
+  #hero .portrait-stage{ --spark-r: 150px; --spark-r2: 172px; }
+}
 @media (max-width:640px){
-  @keyframes heroOrbitA{
-    from{transform:translate(-50%,-50%) rotate(0deg) translateX(120px) rotate(0deg);}
-    to{transform:translate(-50%,-50%) rotate(360deg) translateX(120px) rotate(-360deg);}
-  }
-  @keyframes heroOrbitB{
-    from{transform:translate(-50%,-50%) rotate(0deg) translateX(140px) rotate(0deg);}
-    to{transform:translate(-50%,-50%) rotate(360deg) translateX(140px) rotate(-360deg);}
-  }
+  #hero .portrait-stage{ --spark-r: 118px; --spark-r2: 136px; }
+}
+@media (max-width:480px){
+  #hero .portrait-stage{ --spark-r: 98px; --spark-r2: 114px; }
+}
+@media (max-width:360px){
+  #hero .portrait-stage{ --spark-r: 84px; --spark-r2: 98px; }
 }
 
 /* ---- Skills: shimmer sweep + gentle float + per-row color ---- */
@@ -958,6 +986,7 @@ body.no-custom-cursor #cursorTrail{display:none;}
 }
 
 /* ---- skill nodes (positioned via JS custom props --nx / --ny) ---- */
+.about-skill-nodes{ display:contents; }
 .about-skill-node{
   position:absolute;
   top:50%; left:50%;
@@ -1074,14 +1103,74 @@ body.no-custom-cursor #cursorTrail{display:none;}
   .about-orbit-system{ width:min(460px, 94vw); }
 }
 @media (max-width:640px){
-  .about-ai-core-stage{ padding:48px 8px 36px; }
-  .about-orbit-system{ width:min(320px, 96vw); }
-  .about-ai-core{ width:27%; }
-  .about-skill-node{ padding:8px 12px; font-size:11.5px; min-width:0; }
+  .about-ai-core-stage{ padding:44px 8px 32px; }
+  .about-orbit-system{ width:min(340px, 94vw); }
+  .about-ai-core{ width:25%; }
+  .about-skill-node{ padding:7px 11px; font-size:11px; min-width:0; letter-spacing:.005em; }
   .about-skill-node .node-desc{ display:none; } /* avoid overflow/clipping on small screens */
 }
-@media (max-width:380px){
-  .about-orbit-system{ width:min(280px, 98vw); }
+
+/* still a real orbit here — just tighter radius + smaller chips so all 8
+   labels stay clear of each other and of the core on typical phones */
+@media (max-width:480px){
+  .about-ai-core-stage{ padding:36px 6px 28px; }
+  .about-orbit-system{ width:min(300px, 96vw); }
+  .about-ai-core{ width:23%; }
+  .about-skill-node{ padding:6px 9px; font-size:10.5px; }
+}
+
+/* Below this width even a staggered radial layout gets too tight for 8
+   labeled chips — drop the orbit and lay the skills out as a simple
+   wrapped row under a small static core. Prevents chip overlap on the
+   smallest phones. */
+@media (max-width:360px){
+  .about-orbit-ring,
+  .about-orbit-dot,
+  .about-neural-lines{ display:none; }
+
+  .about-ai-core-stage{ padding:30px 14px 26px; }
+
+  .about-orbit-system{
+    width:100%;
+    max-width:320px;
+    aspect-ratio:auto;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  .about-ai-core{
+    position:static;
+    width:96px;
+  }
+
+  .about-skill-nodes{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+  }
+
+  .about-skill-node{
+    position:static;
+    transform:none !important;
+    animation:none !important;
+    opacity:1;
+    padding:8px 12px;
+    font-size:11.5px;
+  }
+  .about-skill-node::after{ display:none; }
+
+  .about-system-label{
+    position:static;
+    transform:none;
+    margin-top:4px;
+  }
+}
+
+/* ---- responsive: about identity + orbit core on very small screens ---- */
+@media (max-width:400px){
+  .about-identity{ padding:30px 18px; }
+  .about-identity-name{ font-size:clamp(24px,8vw,32px); }
 }
 
 /* ---- reduced motion: keep it attractive but mostly static ---- */
