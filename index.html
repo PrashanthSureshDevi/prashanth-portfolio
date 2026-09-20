@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- SECURITY: Content-Security-Policy (also sent as a real HTTP header via vercel.json) -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formspree.io; frame-src https://expense-tracker-prx.vercel.app; form-action https://formspree.io; base-uri 'self'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PRASHANTH S — AI/ML Engineer</title>
 <meta name="description" content="PRASHANTH S — Aspiring AI/ML Engineer exploring Machine Learning, LLMs, NLP, RAG and Generative AI.">
@@ -22,169 +25,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 
-<style>
-  #hero{
-    --hero-accent: #22d3ee;
-    --hero-accent-2: #8b5cf6;
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-  }
-
-  /* neural-network particle canvas, scoped to the hero only */
-  .hero-canvas{
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    opacity: .55;
-    pointer-events: none;
-  }
-
-  #hero .hero-grid{ position: relative; z-index: 1; }
-
-  /* status pill */
-  #hero .hero-status{
-    display: inline-flex;
-    align-items: center;
-    gap: .55rem;
-    padding: .4rem .9rem;
-    border-radius: 999px;
-    background: rgba(255,255,255,.04);
-    border: 1px solid rgba(255,255,255,.1);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .72rem;
-    letter-spacing: .04em;
-    color: rgba(255,255,255,.75);
-    margin-bottom: 1.25rem;
-  }
-  #hero .status-dot{
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--hero-accent);
-    box-shadow: 0 0 8px var(--hero-accent);
-    animation: heroPulse 2.2s ease-in-out infinite;
-  }
-
-  /* headline accent */
-  #hero .hero-headline .accent-line{
-    background: linear-gradient(90deg, var(--hero-accent), var(--hero-accent-2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  /* buttons */
-  #hero .hero-actions{ display: flex; flex-wrap: wrap; gap: .85rem; }
-  #hero .hero-actions .btn{ display: inline-flex; align-items: center; gap: .55rem; }
-  #hero .hero-actions .btn-icon{ width: 16px; height: 16px; flex-shrink: 0; }
-
-  /* portrait card upgrades */
-  #hero .portrait-stage{ perspective: 1200px; }
-  #hero .portrait-card{
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s ease;
-    box-shadow: 0 30px 80px -30px rgba(34,211,238,.35), 0 10px 30px -14px rgba(139,92,246,.28);
-    will-change: transform;
-  }
-  #hero .portrait-card:hover{
-    box-shadow: 0 40px 100px -30px rgba(34,211,238,.5), 0 14px 40px -14px rgba(139,92,246,.4);
-  }
-  #hero .portrait-img-wrap{
-    border-radius: 26px;
-    overflow: hidden;
-  }
-  #hero .portrait-img-wrap img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  /* rotating conic-gradient ring — the "AI frame" */
-  #hero .portrait-ring{
-    position: absolute;
-    inset: -14px;
-    border-radius: 30px;
-    padding: 1px;
-    background: conic-gradient(from 0deg, var(--hero-accent), var(--hero-accent-2), var(--hero-accent));
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: .55;
-    pointer-events: none;
-    animation: heroSpin 10s linear infinite;
-  }
-
-  /* entrance sequence — one orchestrated load moment */
-  #hero .hero-copy > *{
-    animation: heroFadeUp .8s cubic-bezier(.16,1,.3,1) both;
-  }
-  #hero .hero-copy > *:nth-child(1){ animation-delay: .05s; }
-  #hero .hero-copy > *:nth-child(2){ animation-delay: .12s; }
-  #hero .hero-copy > *:nth-child(3){ animation-delay: .19s; }
-  #hero .hero-copy > *:nth-child(4){ animation-delay: .26s; }
-  #hero .hero-copy > *:nth-child(5){ animation-delay: .33s; }
-  #hero .hero-copy > *:nth-child(6){ animation-delay: .40s; }
-  #hero .hero-copy > *:nth-child(7){ animation-delay: .47s; }
-  #hero .portrait-stage{
-    animation: heroFadeScale .9s cubic-bezier(.16,1,.3,1) .3s both;
-  }
-
-  @keyframes heroPulse{
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: .35; transform: scale(.7); }
-  }
-  @keyframes heroSpin{ to { transform: rotate(360deg); } }
-  @keyframes heroFadeUp{
-    from { opacity: 0; transform: translateY(18px); }
-    to { opacity: 1; transform: none; }
-  }
-  @keyframes heroFadeScale{
-    from { opacity: 0; transform: scale(.92) translateY(12px); }
-    to { opacity: 1; transform: none; }
-  }
-
-  /* accessibility: visible focus states on the new interactive bits */
-  #hero a:focus-visible,
-  #hero .hero-status:focus-visible{
-    outline: 2px solid var(--hero-accent);
-    outline-offset: 3px;
-    border-radius: 6px;
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    #hero .hero-copy > *,
-    #hero .portrait-stage,
-    #hero .portrait-ring,
-    #hero .status-dot{
-      animation: none !important;
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  /* responsive */
-  @media (max-width: 900px){
-    #hero .hero-grid{ grid-template-columns: 1fr; }
-    #hero .portrait-stage{ order: -1; margin: 0 auto 2.25rem; }
-    #hero .hero-copy{ text-align: center; }
-    #hero .hero-status{ margin-left: auto; margin-right: auto; }
-    #hero .hero-actions{ justify-content: center; }
-    #hero .hero-meta{ justify-content: center; }
-  }
-  @media (max-width: 560px){
-    #hero .hero-headline{ font-size: clamp(2.1rem, 10vw, 3rem); line-height: 1.05; }
-    #hero .hero-status{ font-size: .68rem; }
-    #hero .hero-actions{ flex-direction: column; align-items: stretch; }
-    #hero .hero-actions .btn{ justify-content: center; width: 100%; }
-    #hero .portrait-card{ max-width: 280px; margin: 0 auto; }
-  }
-</style>
 </head>
 <body class="intro-lock">
 
@@ -464,52 +304,92 @@
     <div class="section-head reveal">
       <span class="eyebrow">Selected work</span>
       <h2>Projects</h2>
+      <p>Things I've designed, built and shipped — each one a step toward engineering intelligent systems.</p>
     </div>
 
     <div class="projects-grid">
-      <article class="project-card reveal">
-        <div class="project-glow" aria-hidden="true"></div>
+      <div class="project-item reveal" id="projectExpense">
+        <article class="project-card">
+          <span class="project-border" aria-hidden="true"></span>
+          <div class="project-glow" aria-hidden="true"></div>
+          <div class="project-spotlight" aria-hidden="true"></div>
 
-        <div class="project-preview">
-          <iframe src="https://expense-tracker-prx.vercel.app" title="Expense Tracker Pro live preview" loading="lazy" tabindex="-1"></iframe>
-          <div class="project-preview-fade" aria-hidden="true"></div>
-        </div>
+          <div class="project-preview">
+            <span class="float-chip fc-1" aria-hidden="true">HTML</span>
+            <span class="float-chip fc-2" aria-hidden="true">CSS</span>
+            <span class="float-chip fc-3" aria-hidden="true">JavaScript</span>
 
-        <div class="project-body">
-          <div class="project-tag">Live · Web app</div>
-          <h3>Expense Tracker Pro</h3>
-          <p>A personal finance app to log income and expenses, set budgets and savings goals, and see where your money goes with charts, insights and monthly reports.</p>
-
-          <ul class="project-features">
-            <li>Secure login with email or Google</li>
-            <li>Budget goals, savings goals &amp; per-category limits</li>
-            <li>Analytics: spending breakdown and income vs expenses</li>
-            <li>Recurring transactions, custom categories &amp; search/filter</li>
-            <li>Export to JSON, CSV and PDF</li>
-            <li>Dark mode &amp; mobile-friendly layout</li>
-          </ul>
-
-          <div class="project-tech">
-            <span class="skill-chip"><span class="chip-dot"></span>HTML</span>
-            <span class="skill-chip"><span class="chip-dot"></span>CSS</span>
-            <span class="skill-chip"><span class="chip-dot"></span>JavaScript</span>
+            <div class="browser">
+              <div class="browser-bar">
+                <span class="b-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="b-url">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                  expense-tracker-prx.vercel.app
+                </span>
+                <span class="b-live"><span class="live-dot" aria-hidden="true"></span>LIVE</span>
+              </div>
+              <div class="browser-screen" id="projectScreen">
+                <div class="preview-skeleton" aria-hidden="true">LOADING LIVE PREVIEW…</div>
+                <iframe src="https://expense-tracker-prx.vercel.app" title="Expense Tracker Pro live preview" loading="lazy" tabindex="-1"
+                        sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer" allow=""></iframe>
+                <div class="preview-scan" aria-hidden="true"></div>
+                <div class="project-preview-fade" aria-hidden="true"></div>
+              </div>
+            </div>
           </div>
 
-          <div class="project-actions">
-            <a href="https://expense-tracker-prx.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-magnetic>
-              Live demo
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
-            </a>
-            <a href="https://github.com/PrashanthSureshDevi" target="_blank" rel="noopener noreferrer" class="btn btn-outline" data-magnetic>
-              GitHub
-            </a>
+          <div class="project-body">
+            <div class="project-index" aria-hidden="true">01</div>
+            <div class="project-tag"><span class="live-dot" aria-hidden="true"></span>Live · Web app</div>
+            <h3>Expense Tracker Pro</h3>
+            <p>A personal finance app to log income and expenses, set budgets and savings goals, and see where your money goes with charts, insights and monthly reports.</p>
+
+            <div class="project-stats" aria-label="Project highlights">
+              <div class="pstat"><b data-count="6">6</b><span>Core features</span></div>
+              <div class="pstat"><b data-count="3">3</b><span>Export formats</span></div>
+              <div class="pstat"><b data-count="2">2</b><span>Login options</span></div>
+            </div>
+
+            <ul class="project-features">
+              <li>Secure login with email or Google</li>
+              <li>Budget goals, savings goals &amp; per-category limits</li>
+              <li>Analytics: spending breakdown and income vs expenses</li>
+              <li>Recurring transactions, custom categories &amp; search/filter</li>
+              <li>Export to JSON, CSV and PDF</li>
+              <li>Dark mode &amp; mobile-friendly layout</li>
+            </ul>
+
+            <div class="project-tech">
+              <span class="skill-chip"><span class="chip-dot"></span>HTML</span>
+              <span class="skill-chip"><span class="chip-dot"></span>CSS</span>
+              <span class="skill-chip"><span class="chip-dot"></span>JavaScript</span>
+            </div>
+
+            <div class="project-actions">
+              <a href="https://expense-tracker-prx.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-magnetic>
+                Live demo
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+              </a>
+              <a href="https://github.com/PrashanthSureshDevi" target="_blank" rel="noopener noreferrer" class="btn btn-outline" data-magnetic>
+                GitHub
+              </a>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+      </div>
 
       <div class="project-more reveal">
-        <span class="cs-bracket" aria-hidden="true">+</span>
-        <p>More projects are in progress. Check back soon.</p>
+        <div class="pm-orbit" aria-hidden="true">
+          <span class="pm-ring"></span>
+          <span class="pm-ring r2"></span>
+          <span class="pm-core">+</span>
+        </div>
+        <div class="pm-copy">
+          <div class="pm-tag">In the lab</div>
+          <h4>Next build loading…</h4>
+          <p>More projects are in progress. Check back soon.</p>
+          <div class="pm-bar" aria-hidden="true"><span></span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -543,10 +423,29 @@
         </div>
       </div>
 
-      <div class="timeline-item is-upcoming">
+      <div class="timeline-item is-complete">
         <div class="timeline-node"><span>03</span></div>
         <div class="timeline-card">
-          <div class="tc-status status-upcoming">Coming soon</div>
+          <div class="tc-status status-complete">Completed</div>
+          <h4>Project — Expense Tracker Pro</h4>
+          <p>Built and shipped a live personal-finance web app with budgets, savings goals, analytics and PDF/CSV/JSON export.</p>
+          <div class="tc-tags" aria-label="Technologies used">
+            <span>HTML</span><span>CSS</span><span>JavaScript</span>
+          </div>
+          <a class="tc-link" href="#projects" data-magnetic>
+            View project
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="timeline-item is-upcoming">
+        <div class="timeline-node"><span>04</span></div>
+        <div class="timeline-card">
+          <div class="tc-head">
+            <span class="tc-next">NEXT UP</span>
+            <span class="tc-status status-upcoming">Coming soon</span>
+          </div>
           <h4>Internship</h4>
           <p>Next step: gaining practical industry experience and applying my skills.</p>
         </div>
@@ -606,19 +505,23 @@
         <div class="contact-actions" id="contactLinks"></div>
       </div>
 
-      <form id="contactForm" class="contact-form reveal" action="https://formspree.io/f/xeaqdyoa" method="POST" novalidate>
+      <form id="contactForm" class="contact-form reveal" action="https://formspree.io/f/xeaqdyoa" method="POST" autocomplete="on" novalidate>
+        <div class="hp-field" aria-hidden="true">
+          <label for="cfWebsite">Leave this field empty</label>
+          <input type="text" id="cfWebsite" name="_gotcha" tabindex="-1" autocomplete="off">
+        </div>
         <div class="form-field">
-          <input type="text" id="cfName" name="name" placeholder=" " autocomplete="name" required>
+          <input type="text" id="cfName" name="name" placeholder=" " autocomplete="name" maxlength="80" required>
           <label for="cfName">Name</label>
           <span class="form-error" id="cfNameError"></span>
         </div>
         <div class="form-field">
-          <input type="email" id="cfEmail" name="email" placeholder=" " autocomplete="email" required>
+          <input type="email" id="cfEmail" name="email" placeholder=" " autocomplete="email" maxlength="120" required>
           <label for="cfEmail">Email</label>
           <span class="form-error" id="cfEmailError"></span>
         </div>
         <div class="form-field">
-          <textarea id="cfMessage" name="message" placeholder=" " rows="5" required></textarea>
+          <textarea id="cfMessage" name="message" placeholder=" " rows="5" maxlength="2000" required></textarea>
           <label for="cfMessage">Message</label>
           <span class="form-error" id="cfMessageError"></span>
         </div>
@@ -652,147 +555,6 @@
 </button>
 
 <script src="script.js"></script>
-<script>
-(function(){
-  var heroEl = document.getElementById('hero');
-  var canvas = document.getElementById('heroCanvas');
-  if(!heroEl || !canvas) return;
-
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ctx = canvas.getContext('2d');
-  var w, h, dpr;
-  var nodes = [];
-  var mouse = { x: null, y: null };
-  var NODE_COUNT = 46;
-  var LINK_DIST = 130;
-  var rafId = null;
-
-  function resize(){
-    dpr = window.devicePixelRatio || 1;
-    w = heroEl.clientWidth;
-    h = heroEl.clientHeight;
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function makeNodes(){
-    nodes = [];
-    for(var i = 0; i < NODE_COUNT; i++){
-      nodes.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        r: Math.random() * 1.5 + 0.6
-      });
-    }
-  }
-
-  function drawFrame(){
-    ctx.clearRect(0, 0, w, h);
-
-    for(var i = 0; i < nodes.length; i++){
-      var n = nodes[i];
-      n.x += n.vx;
-      n.y += n.vy;
-      if(n.x < 0 || n.x > w) n.vx *= -1;
-      if(n.y < 0 || n.y > h) n.vy *= -1;
-    }
-
-    for(var a = 0; a < nodes.length; a++){
-      for(var b = a + 1; b < nodes.length; b++){
-        var dx = nodes[a].x - nodes[b].x;
-        var dy = nodes[a].y - nodes[b].y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        if(dist < LINK_DIST){
-          var o = (1 - dist / LINK_DIST) * 0.35;
-          ctx.strokeStyle = 'rgba(110,231,255,' + o + ')';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(nodes[a].x, nodes[a].y);
-          ctx.lineTo(nodes[b].x, nodes[b].y);
-          ctx.stroke();
-        }
-      }
-      if(mouse.x !== null){
-        var mdx = nodes[a].x - mouse.x;
-        var mdy = nodes[a].y - mouse.y;
-        var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-        if(mdist < 160){
-          var mo = (1 - mdist / 160) * 0.5;
-          ctx.strokeStyle = 'rgba(139,92,246,' + mo + ')';
-          ctx.beginPath();
-          ctx.moveTo(nodes[a].x, nodes[a].y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.stroke();
-        }
-      }
-    }
-
-    for(var k = 0; k < nodes.length; k++){
-      ctx.beginPath();
-      ctx.arc(nodes[k].x, nodes[k].y, nodes[k].r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(180,240,255,0.8)';
-      ctx.fill();
-    }
-  }
-
-  function loop(){
-    drawFrame();
-    rafId = requestAnimationFrame(loop);
-  }
-
-  resize();
-  makeNodes();
-  if(reduceMotion){
-    drawFrame();
-  } else {
-    loop();
-  }
-
-  var resizeTimer;
-  window.addEventListener('resize', function(){
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function(){
-      resize();
-      makeNodes();
-    }, 150);
-  }, { passive: true });
-
-  heroEl.addEventListener('mousemove', function(e){
-    var rect = heroEl.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-    heroEl.style.setProperty('--mx', mouse.x + 'px');
-    heroEl.style.setProperty('--my', mouse.y + 'px');
-  }, { passive: true });
-
-  heroEl.addEventListener('mouseleave', function(){
-    mouse.x = null;
-    mouse.y = null;
-    heroEl.style.removeProperty('--mx');
-    heroEl.style.removeProperty('--my');
-  });
-
-  // subtle portrait tilt on hover (desktop only, skipped for reduced motion)
-  var stage = heroEl.querySelector('.portrait-stage');
-  var card = document.getElementById('portraitCard');
-  if(stage && card && !reduceMotion){
-    stage.addEventListener('mousemove', function(e){
-      var r = card.getBoundingClientRect();
-      var px = (e.clientX - r.left) / r.width - 0.5;
-      var py = (e.clientY - r.top) / r.height - 0.5;
-      card.style.transform = 'rotateY(' + (px * 6) + 'deg) rotateX(' + (py * -6) + 'deg) translateY(-4px)';
-    });
-    stage.addEventListener('mouseleave', function(){
-      card.style.transform = '';
-    });
-  }
-})();
-</script>
 
 </body>
 </html>
