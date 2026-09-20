@@ -374,9 +374,7 @@
 
     </div>
 
-    <!-- ===== ABOUT ENHANCEMENT — premium identity panel + AI/ML orbital core =====
-         Purely additive: sits below the existing about-grid-v2 above. Nothing
-         above this comment was touched. ===== -->
+    <!-- ===== ABOUT ENHANCEMENT — premium identity panel + AI/ML orbital core ===== -->
 
     <div class="about-identity reveal" id="aboutIdentity">
       <canvas class="about-identity-particles" id="identityCanvas" aria-hidden="true"></canvas>
@@ -467,18 +465,51 @@
       <span class="eyebrow">Selected work</span>
       <h2>Projects</h2>
     </div>
-    <div class="coming-soon reveal">
-      <div class="cs-visual" aria-hidden="true">
-        <span class="cs-bracket cs-bracket-l">&lt;</span>
-        <div class="cs-terminal">
-          <div class="cs-terminal-line"><span class="prompt">&gt;</span><span class="cs-type" id="csType"></span><span class="term-cursor"></span></div>
+
+    <div class="projects-grid">
+      <article class="project-card reveal">
+        <div class="project-glow" aria-hidden="true"></div>
+
+        <div class="project-preview">
+          <iframe src="https://expense-tracker-prx.vercel.app" title="Expense Tracker Pro live preview" loading="lazy" tabindex="-1"></iframe>
+          <div class="project-preview-fade" aria-hidden="true"></div>
         </div>
-        <span class="cs-bracket cs-bracket-r">&gt;</span>
-      </div>
-      <h3>Building in progress</h3>
-      <p>Real projects are currently being developed. Check back soon.</p>
-      <div class="cs-progress" role="progressbar" aria-label="Projects in development" aria-valuemin="0" aria-valuemax="100" aria-valuenow="35">
-        <div class="cs-progress-fill"></div>
+
+        <div class="project-body">
+          <div class="project-tag">Live · Web app</div>
+          <h3>Expense Tracker Pro</h3>
+          <p>A personal finance app to log income and expenses, set budgets and savings goals, and see where your money goes with charts, insights and monthly reports.</p>
+
+          <ul class="project-features">
+            <li>Secure login with email or Google</li>
+            <li>Budget goals, savings goals &amp; per-category limits</li>
+            <li>Analytics: spending breakdown and income vs expenses</li>
+            <li>Recurring transactions, custom categories &amp; search/filter</li>
+            <li>Export to JSON, CSV and PDF</li>
+            <li>Dark mode &amp; mobile-friendly layout</li>
+          </ul>
+
+          <div class="project-tech">
+            <span class="skill-chip"><span class="chip-dot"></span>HTML</span>
+            <span class="skill-chip"><span class="chip-dot"></span>CSS</span>
+            <span class="skill-chip"><span class="chip-dot"></span>JavaScript</span>
+          </div>
+
+          <div class="project-actions">
+            <a href="https://expense-tracker-prx.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-magnetic>
+              Live demo
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+            </a>
+            <a href="https://github.com/PrashanthSureshDevi" target="_blank" rel="noopener noreferrer" class="btn btn-outline" data-magnetic>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <div class="project-more reveal">
+        <span class="cs-bracket" aria-hidden="true">+</span>
+        <p>More projects are in progress. Check back soon.</p>
       </div>
     </div>
   </div>
