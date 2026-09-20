@@ -48,6 +48,25 @@ const CONFIG = {
   ]
 };
 
+/* ---------- SECURITY HELPERS ---------- */
+// Freeze site config so nothing can mutate it at runtime
+(function deepFreeze(o){
+  Object.values(o).forEach(v => { if (v && typeof v === 'object') deepFreeze(v); });
+  Object.freeze(o);
+})(CONFIG);
+
+const SAFE = {
+  // only ever allow https:// links from config data
+  url(u){
+    try { const p = new URL(u, location.href); return p.protocol === 'https:' ? p.href : '#'; }
+    catch (e) { return '#'; }
+  },
+  // escape anything interpolated into innerHTML
+  esc(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+};
+
 const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (isTouch) document.body.classList.add('no-custom-cursor');
@@ -330,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const contactLinks = document.getElementById('contactLinks');
   SOCIAL_LINKS.forEach(([key,label]) => {
     const a = document.createElement('a');
-    a.href = CONFIG.social[key]; a.className = 'contact-link'; a.setAttribute('data-magnetic','');
+    a.href = SAFE.url(CONFIG.social[key]); a.className = 'contact-link'; a.setAttribute('data-magnetic','');
     a.target = '_blank'; a.rel = 'noopener noreferrer';
     a.innerHTML = `${ICONS[key]} ${label}`;
     contactLinks.appendChild(a);
@@ -340,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const socialIcons = document.getElementById('socialIcons');
   SOCIAL_LINKS.forEach(([key,label]) => {
     const a = document.createElement('a');
-    a.href = CONFIG.social[key]; a.setAttribute('aria-label', label); a.setAttribute('data-magnetic','');
+    a.href = SAFE.url(CONFIG.social[key]); a.setAttribute('aria-label', label); a.setAttribute('data-magnetic','');
     a.target = '_blank'; a.rel = 'noopener noreferrer';
     a.innerHTML = ICONS[key];
     socialIcons.appendChild(a);
@@ -368,9 +387,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // duplicate the skill list so the loop is seamless
       const chipsHTML = cat.skills.map(s => {
-        const level = s.level ? `<span class="chip-level">${s.level}</span>` : '';
+        const level = s.level ? `<span class="chip-level">${SAFE.esc(s.level)}</span>` : '';
         const delay = (Math.random() * 3).toFixed(2);
-        return `<span class="skill-chip" style="animation-delay:${delay}s"><span class="chip-dot"></span>${s.name}${level}</span>`;
+        return `<span class="skill-chip" style="animation-delay:${delay}s"><span class="chip-dot"></span>${SAFE.esc(s.name)}${level}</span>`;
       }).join('');
       track.innerHTML = chipsHTML + chipsHTML;
 
@@ -431,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
       function showStatus(){
         const div = document.createElement('div');
         div.className = 'term-status';
-        div.innerHTML = `<div class="ts-name">${CONFIG.name}</div><div class="ts-role">${CONFIG.role.toUpperCase()}</div><div class="ts-status">STATUS: BUILDING</div>`;
+        div.innerHTML = `<div class="ts-name">${SAFE.esc(CONFIG.name)}</div><div class="ts-role">${SAFE.esc(CONFIG.role.toUpperCase())}</div><div class="ts-status">STATUS: BUILDING</div>`;
         body.appendChild(div);
         requestAnimationFrame(() => { div.style.transition = 'opacity .6s ease'; div.style.opacity = 1; });
       }
@@ -509,8 +528,21 @@ document.addEventListener('DOMContentLoaded', () => {
   (function timelineFill(){
     const timeline = document.getElementById('timeline');
     if (!timeline) return;
+
+    // fill the track exactly up to the last completed milestone
+    function setFill(){
+      const done = timeline.querySelectorAll('.timeline-item.is-complete');
+      const last = done[done.length - 1];
+      if (!last) return;
+      const node = last.querySelector('.timeline-node');
+      const px = last.offsetTop + node.offsetTop + node.offsetHeight / 2 - 6;
+      timeline.style.setProperty('--fill', Math.max(0, px) + 'px');
+    }
+    setFill();
+    window.addEventListener('resize', setFill, { passive: true });
+
     const tio = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting){ timeline.classList.add('is-active'); tio.disconnect(); } });
+      entries.forEach(e => { if (e.isIntersecting){ setFill(); timeline.classList.add('is-active'); tio.disconnect(); } });
     }, { threshold: 0.25 });
     tio.observe(timeline);
   })();
@@ -534,30 +566,58 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
-  /* ---------- CONTACT FORM: AJAX submit (no page redirect) ---------- */
+  /* ---------- CONTACT FORM: hardened AJAX submit ---------- */
   (function contactForm(){
     const form = document.getElementById('contactForm');
     if (!form) return;
     const fields = {
-      name: { input: document.getElementById('cfName'), error: document.getElementById('cfNameError') },
-      email: { input: document.getElementById('cfEmail'), error: document.getElementById('cfEmailError') },
-      message: { input: document.getElementById('cfMessage'), error: document.getElementById('cfMessageError') }
+      name: { input: document.getElementById('cfName'), error: document.getElementById('cfNameError'), max: 80 },
+      email: { input: document.getElementById('cfEmail'), error: document.getElementById('cfEmailError'), max: 120 },
+      message: { input: document.getElementById('cfMessage'), error: document.getElementById('cfMessageError'), max: 2000 }
     };
+    const honeypot = document.getElementById('cfWebsite');
+    const submitBtn = document.getElementById('cfSubmit');
     const status = document.getElementById('cfStatus');
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+    const ALLOWED_ORIGIN = 'https://formspree.io'; // the only place this form may post to
+    const MIN_FILL_MS = 2500;                      // humans need more than 2.5s to write a message
+    const COOLDOWN_MS = 30000;                     // 30s between sends
+    const MAX_PER_SESSION = 5;
+    const openedAt = Date.now();
+
+    // strip control chars + invisible bidi/zero-width characters, trim, cap length
+    const clean = (s, max) => String(s)
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '')
+      .trim().slice(0, max);
+
+    function readLimit(){
+      try { return JSON.parse(sessionStorage.getItem('cf_limit')) || { count: 0, last: 0 }; }
+      catch (e) { return { count: 0, last: 0 }; }
+    }
+    function writeLimit(v){ try { sessionStorage.setItem('cf_limit', JSON.stringify(v)); } catch (e) {} }
+
+    function setStatus(msg, kind){
+      status.textContent = msg;
+      status.classList.remove('is-error', 'is-success');
+      if (kind) status.classList.add(kind === 'ok' ? 'is-success' : 'is-error');
+    }
+
     function validate(){
       let ok = true;
-      if (!fields.name.input.value.trim()){
+      if (!clean(fields.name.input.value, fields.name.max)){
         fields.name.error.textContent = 'Please enter your name.'; ok = false;
       } else fields.name.error.textContent = '';
 
-      if (!emailRe.test(fields.email.input.value.trim())){
+      if (!emailRe.test(clean(fields.email.input.value, fields.email.max))){
         fields.email.error.textContent = 'Please enter a valid email.'; ok = false;
       } else fields.email.error.textContent = '';
 
-      if (fields.message.input.value.trim().length < 10){
+      const msg = clean(fields.message.input.value, fields.message.max);
+      if (msg.length < 10){
         fields.message.error.textContent = 'Message should be at least 10 characters.'; ok = false;
+      } else if ((msg.match(/https?:\/\//gi) || []).length > 2){
+        fields.message.error.textContent = 'Please include at most 2 links.'; ok = false;
       } else fields.message.error.textContent = '';
 
       return ok;
@@ -571,35 +631,76 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      if (!validate()){
-        status.textContent = 'Please fix the highlighted fields.';
-        status.classList.remove('is-success');
-        status.classList.add('is-error');
+      // bots fill hidden fields — pretend success, send nothing
+      if (honeypot && honeypot.value){
+        setStatus('Message sent — thank you!', 'ok');
+        form.reset();
         return;
       }
 
-      status.textContent = 'Sending...';
-      status.classList.remove('is-error', 'is-success');
+      if (!validate()){
+        setStatus('Please fix the highlighted fields.', 'err');
+        return;
+      }
 
-      fetch(form.action, {
+      if (Date.now() - openedAt < MIN_FILL_MS){
+        setStatus('That was quick — please review your message and try again.', 'err');
+        return;
+      }
+
+      const limit = readLimit();
+      const wait = COOLDOWN_MS - (Date.now() - limit.last);
+      if (limit.count >= MAX_PER_SESSION){
+        setStatus('Message limit reached for this session. Please email me directly.', 'err');
+        return;
+      }
+      if (wait > 0){
+        setStatus('Please wait ' + Math.ceil(wait / 1000) + 's before sending another message.', 'err');
+        return;
+      }
+
+      // refuse to post anywhere except the trusted endpoint (guards against a tampered form action)
+      let endpoint;
+      try {
+        endpoint = new URL(form.getAttribute('action'), location.href);
+        if (endpoint.origin !== ALLOWED_ORIGIN) throw new Error('bad origin');
+      } catch (err) {
+        setStatus('Form is misconfigured. Please email me directly.', 'err');
+        return;
+      }
+
+      const data = new FormData();
+      data.append('name', clean(fields.name.input.value, fields.name.max));
+      data.append('email', clean(fields.email.input.value, fields.email.max));
+      data.append('message', clean(fields.message.input.value, fields.message.max));
+      data.append('_gotcha', '');
+
+      setStatus('Sending...');
+      submitBtn.disabled = true;
+
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 12000);
+
+      fetch(endpoint.href, {
         method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
+        body: data,
+        headers: { 'Accept': 'application/json' },
+        credentials: 'omit',
+        referrerPolicy: 'strict-origin-when-cross-origin',
+        signal: ctrl.signal
       })
       .then(response => {
-        if (response.ok) {
-          status.textContent = 'Message sent — thank you!';
-          status.classList.add('is-success');
-          form.reset();
-        } else {
-          return response.json().then(data => {
-            throw new Error(data?.errors?.map(e => e.message).join(', ') || 'Submission failed.');
-          });
-        }
+        if (!response.ok) throw new Error('failed');
+        writeLimit({ count: limit.count + 1, last: Date.now() });
+        setStatus('Message sent — thank you!', 'ok');
+        form.reset();
       })
-      .catch(err => {
-        status.textContent = err.message || 'Something went wrong. Please try again.';
-        status.classList.add('is-error');
+      .catch(() => {
+        setStatus('Something went wrong. Please try again or email me directly.', 'err');
+      })
+      .finally(() => {
+        clearTimeout(timer);
+        submitBtn.disabled = false;
       });
     });
   })();
@@ -801,3 +902,220 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
 });
+
+
+/* =====================================================================
+   HERO — neural canvas + portrait tilt
+   (moved out of index.html so the Content-Security-Policy can forbid inline scripts)
+   ===================================================================== */
+(function(){
+  var heroEl = document.getElementById('hero');
+  var canvas = document.getElementById('heroCanvas');
+  if(!heroEl || !canvas) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ctx = canvas.getContext('2d');
+  var w, h, dpr;
+  var nodes = [];
+  var mouse = { x: null, y: null };
+  var NODE_COUNT = 46;
+  var LINK_DIST = 130;
+  var rafId = null;
+
+  function resize(){
+    dpr = window.devicePixelRatio || 1;
+    w = heroEl.clientWidth;
+    h = heroEl.clientHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function makeNodes(){
+    nodes = [];
+    for(var i = 0; i < NODE_COUNT; i++){
+      nodes.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        r: Math.random() * 1.5 + 0.6
+      });
+    }
+  }
+
+  function drawFrame(){
+    ctx.clearRect(0, 0, w, h);
+
+    for(var i = 0; i < nodes.length; i++){
+      var n = nodes[i];
+      n.x += n.vx;
+      n.y += n.vy;
+      if(n.x < 0 || n.x > w) n.vx *= -1;
+      if(n.y < 0 || n.y > h) n.vy *= -1;
+    }
+
+    for(var a = 0; a < nodes.length; a++){
+      for(var b = a + 1; b < nodes.length; b++){
+        var dx = nodes[a].x - nodes[b].x;
+        var dy = nodes[a].y - nodes[b].y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if(dist < LINK_DIST){
+          var o = (1 - dist / LINK_DIST) * 0.35;
+          ctx.strokeStyle = 'rgba(110,231,255,' + o + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(nodes[a].x, nodes[a].y);
+          ctx.lineTo(nodes[b].x, nodes[b].y);
+          ctx.stroke();
+        }
+      }
+      if(mouse.x !== null){
+        var mdx = nodes[a].x - mouse.x;
+        var mdy = nodes[a].y - mouse.y;
+        var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+        if(mdist < 160){
+          var mo = (1 - mdist / 160) * 0.5;
+          ctx.strokeStyle = 'rgba(139,92,246,' + mo + ')';
+          ctx.beginPath();
+          ctx.moveTo(nodes[a].x, nodes[a].y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    for(var k = 0; k < nodes.length; k++){
+      ctx.beginPath();
+      ctx.arc(nodes[k].x, nodes[k].y, nodes[k].r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(180,240,255,0.8)';
+      ctx.fill();
+    }
+  }
+
+  function loop(){
+    drawFrame();
+    rafId = requestAnimationFrame(loop);
+  }
+
+  resize();
+  makeNodes();
+  if(reduceMotion){
+    drawFrame();
+  } else {
+    loop();
+  }
+
+  var resizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function(){
+      resize();
+      makeNodes();
+    }, 150);
+  }, { passive: true });
+
+  heroEl.addEventListener('mousemove', function(e){
+    var rect = heroEl.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+    heroEl.style.setProperty('--mx', mouse.x + 'px');
+    heroEl.style.setProperty('--my', mouse.y + 'px');
+  }, { passive: true });
+
+  heroEl.addEventListener('mouseleave', function(){
+    mouse.x = null;
+    mouse.y = null;
+    heroEl.style.removeProperty('--mx');
+    heroEl.style.removeProperty('--my');
+  });
+
+  // subtle portrait tilt on hover (desktop only, skipped for reduced motion)
+  var stage = heroEl.querySelector('.portrait-stage');
+  var card = document.getElementById('portraitCard');
+  if(stage && card && !reduceMotion){
+    stage.addEventListener('mousemove', function(e){
+      var r = card.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - 0.5;
+      var py = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = 'rotateY(' + (px * 6) + 'deg) rotateX(' + (py * -6) + 'deg) translateY(-4px)';
+    });
+    stage.addEventListener('mouseleave', function(){
+      card.style.transform = '';
+    });
+  }
+})();
+
+/* =====================================================================
+   PROJECTS SHOWCASE — live preview loader, animated counters, 3D tilt
+   ===================================================================== */
+(function projectsShowcase(){
+  const items = document.querySelectorAll('.project-item');
+  if (!items.length) return;
+
+  function countUp(el){
+    const end = parseInt(el.dataset.count, 10) || 0;
+    if (reduceMotion){ el.textContent = end; return; }
+    const dur = 1100, t0 = performance.now();
+    (function step(t){
+      const p = Math.min(1, (t - t0) / dur);
+      el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+
+  items.forEach(item => {
+    const card = item.querySelector('.project-card');
+    const screen = item.querySelector('.browser-screen');
+    const frame = item.querySelector('iframe');
+    const nums = item.querySelectorAll('[data-count]');
+
+    // fade the live preview in once it has loaded (fallback after 15s)
+    if (screen && frame){
+      const done = () => screen.classList.add('is-loaded');
+      frame.addEventListener('load', done, { once: true });
+      setTimeout(done, 15000);
+    }
+
+    // animated counters when the card scrolls into view
+    if (nums.length){
+      if (!reduceMotion) nums.forEach(n => { n.textContent = '0'; });
+      const cio = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting){ nums.forEach(countUp); cio.disconnect(); }
+        });
+      }, { threshold: 0.3 });
+      cio.observe(item);
+    }
+
+    // 3D tilt + cursor spotlight (mouse only)
+    if (!card || reduceMotion || isTouch) return;
+    card.addEventListener('pointermove', (e) => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      const y = (e.clientY - r.top) / r.height;
+      card.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+      card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+      card.style.setProperty('--ry', ((x - 0.5) * 6).toFixed(2) + 'deg');
+      card.style.setProperty('--rx', ((0.5 - y) * 6).toFixed(2) + 'deg');
+    });
+    card.addEventListener('pointerleave', () => {
+      card.style.setProperty('--rx', '0deg');
+      card.style.setProperty('--ry', '0deg');
+    });
+  });
+})();
+
+/* =====================================================================
+   SECURITY — force safe rel on every external link (incl. dynamic ones)
+   ===================================================================== */
+(function hardenLinks(){
+  document.querySelectorAll('a[target="_blank"]').forEach(a => {
+    const rel = new Set((a.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+    rel.add('noopener'); rel.add('noreferrer');
+    a.setAttribute('rel', Array.from(rel).join(' '));
+  });
+})();
