@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
       el.addEventListener('mouseenter', () => ring.classList.add('is-active'));
       el.addEventListener('mouseleave', () => ring.classList.remove('is-active'));
     });
-    document.querySelectorAll('.portrait-card, .about-portrait-frame, .glass-card, .timeline-card, .coming-soon').forEach(el => {
+    document.querySelectorAll('.portrait-card, .about-portrait-frame, .glass-card, .timeline-card, .project-card').forEach(el => {
       el.addEventListener('mouseenter', () => ring.classList.add('is-card'));
       el.addEventListener('mouseleave', () => ring.classList.remove('is-card'));
     });
@@ -503,34 +503,6 @@ document.addEventListener('DOMContentLoaded', () => {
       frame.style.transform = `rotateY(${px*10}deg) rotateX(${-py*10}deg)`;
     });
     stageEl.addEventListener('mouseleave', () => { frame.style.transform = ''; });
-  })();
-
-  /* ---------- PROJECTS: coming-soon terminal type loop ---------- */
-  (function comingSoonType(){
-    const el = document.getElementById('csType');
-    const section = document.getElementById('projects');
-    if (!el || !section) return;
-    const lines = ['building_next_project.py', 'status: in_development', 'check_back_soon()'];
-    let li = 0, ci = 0, deleting = false, started = false;
-
-    function tick(){
-      const line = lines[li];
-      if (!deleting){
-        ci++;
-        el.textContent = line.slice(0, ci);
-        if (ci === line.length){ deleting = true; setTimeout(tick, 1400); return; }
-      } else {
-        ci--;
-        el.textContent = line.slice(0, ci);
-        if (ci === 0){ deleting = false; li = (li+1) % lines.length; }
-      }
-      setTimeout(tick, deleting ? 28 : 55);
-    }
-    if (reduceMotion){ el.textContent = lines[0]; return; }
-    const tio = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting && !started){ started = true; tick(); tio.disconnect(); } });
-    }, { threshold: 0.3 });
-    tio.observe(section);
   })();
 
   /* ---------- JOURNEY: animate the timeline fill on reveal ---------- */
